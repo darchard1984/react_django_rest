@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "*"
+psycopg2 = "*"
+djangorestframework = "*"
+uWSGI = "*"
+
+[dev-packages]
+unify = "*"
+pytest = "*"
+pytest-yapf = "*"
+pytest-flake8 = "*"
+pytest-isort = "*"
+pytest-cov = "*"
+yapf = "*"
+mypy = "*"
+pytest-mypy = "*"
+pytest-django = "*"
+django-stubs = "*"
+
+[requires]
+python_version = "3.8"
+

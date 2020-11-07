@@ -1,0 +1,6 @@
+.env
+database_data
+.vscode
+.mypy_cache
+.coverage
+.pytest_cache

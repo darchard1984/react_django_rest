@@ -4,3 +4,4 @@ database_data
 .mypy_cache
 .coverage
 .pytest_cache
+.DS_Store

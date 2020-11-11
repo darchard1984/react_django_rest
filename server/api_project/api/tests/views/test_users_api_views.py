@@ -1,3 +1,4 @@
+import json
 from uuid import uuid4
 
 from django.test import Client, TestCase
@@ -6,7 +7,6 @@ from rest_framework import status
 
 from ...models import User
 from ...serializers import UserSerializer
-import json
 
 
 class TestGetUser(TestCase):
@@ -38,7 +38,7 @@ class TestDeleteUser(TestCase):
             'get_delete_update_user', kwargs={'pk': self.user.pk}
         )
 
-    def test_soft_delete_user(self):
+    def test_delete_user(self):
         r = self.client.delete(self.get_delete_update_endpoint)
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
@@ -54,13 +54,9 @@ class TestPutUser(TestCase):
             'get_delete_update_user', kwargs={'pk': self.user.pk}
         )
 
-        self.valid_data = {
-            'firebase_uid': 'foo'
-        }
+        self.valid_data = {'firebase_uid': 'foo'}
 
-        self.invalid_data = {
-            'this_is_invalid': 'bar'
-        }
+        self.invalid_data = {'this_is_invalid': 'bar'}
 
     def test_update_user(self):
         r = self.client.put(
@@ -73,8 +69,9 @@ class TestPutUser(TestCase):
         updated_firebase_uid = User.objects.get(pk=self.user.pk).firebase_uid
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(updated_firebase_uid,
-                         self.valid_data.get('firebase_uid'))
+        self.assertEqual(
+            updated_firebase_uid, self.valid_data.get('firebase_uid')
+        )
 
     def test_invalid_user_update(self):
         r = self.client.put(

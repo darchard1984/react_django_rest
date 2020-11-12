@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from ...models import Board, CardList, User
-from ...serializers import CardListSerializer, CardListWriteSerializer
+from ...serializers import CardListSerializer
 
 
 class TestGetCardList(TestCase):

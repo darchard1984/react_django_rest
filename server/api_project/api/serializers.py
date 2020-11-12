@@ -2,9 +2,8 @@ from rest_framework import serializers
 
 from .models import Board, Card, CardList, User
 
+
 # USER SERIALIZERS
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -30,6 +29,16 @@ class BoardWriteSerializer(serializers.ModelSerializer):
 
 # CARD LIST SERIALIZERS
 class CardListSerializer(serializers.ModelSerializer):
+    board = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = CardList
+        fields = ('pk', 'title', 'board', 'created_at', 'updated_at')
+
+
+class CardListWriteSerializer(serializers.ModelSerializer):
+    board = serializers.PrimaryKeyRelatedField(queryset=Board.objects.all())
+
     class Meta:
         model = CardList
         fields = ('pk', 'title', 'board', 'created_at', 'updated_at')

@@ -11,12 +11,8 @@ from ...serializers import BoardSerializer
 
 class TestGetBoard(TestCase):
     def setUp(self):
-        self.board_title = 'Foo'
-        self.user_mock_firebase_uid = str(uuid4())
-
         self.board = Board.objects.create(
-            title=self.board_title,
-            user=User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
         )
 
         self.client = Client()
@@ -35,12 +31,8 @@ class TestGetBoard(TestCase):
 
 class TestDeleteBoard(TestCase):
     def setUp(self):
-        self.board_title = 'Foo'
-        self.user_mock_firebase_uid = str(uuid4())
-
         self.board = Board.objects.create(
-            title=self.board_title,
-            user=User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
         )
 
         self.client = Client()
@@ -48,7 +40,7 @@ class TestDeleteBoard(TestCase):
             'get_delete_update_board', kwargs={'pk': self.board.pk}
         )
 
-    def test_delete_user(self):
+    def test_delete_board(self):
         r = self.client.delete(self.get_delete_update_endpoint)
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
@@ -56,12 +48,8 @@ class TestDeleteBoard(TestCase):
 
 class TestPutBoard(TestCase):
     def setUp(self):
-        self.board_title = 'Foo'
-        self.user_mock_firebase_uid = str(uuid4())
-
         self.board = Board.objects.create(
-            title=self.board_title,
-            user=User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
         )
 
         self.client = Client()

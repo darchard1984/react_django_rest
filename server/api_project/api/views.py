@@ -2,8 +2,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Board, User
-from .serializers import BoardSerializer, BoardWriteSerializer, UserSerializer
+from .models import Board, User, CardList
+from .serializers import (BoardSerializer, BoardWriteSerializer,
+                          CardListSerializer, CardListWriteSerializer,
+                          UserSerializer)
 
 
 def _handle_get_delete_update(request, pk, serializer, model):
@@ -64,3 +66,19 @@ def create_board(request):
     }
 
     return _handle_post(request, board_data, BoardWriteSerializer)
+
+
+# CARD LIST VIEWS
+@api_view(['GET', 'DELETE', 'PUT'])
+def get_delete_update_card_list(request, pk):
+    return _handle_get_delete_update(request, pk, CardListSerializer, CardList)
+
+
+@api_view(['POST'])
+def create_card_list(request):
+    card_list_data = {
+        'title': request.data.get('title'),
+        'board': request.data.get('board')
+    }
+
+    return _handle_post(request, card_list_data, CardListWriteSerializer)

@@ -5,7 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from ...models import Board, CardList, User, Card
+from ...models import Board, Card, CardList, User
 from ...serializers import CardSerializer
 
 
@@ -16,10 +16,7 @@ class TestGetCard(TestCase):
         card_list = CardList.objects.create(title='Bar', board=board)
 
         self.card = Card.objects.create(
-            title="Foo",
-            description="Bar",
-            position=1,
-            card_list=card_list
+            title='Foo', description='Bar', position=1, card_list=card_list
         )
 
         self.client = Client()
@@ -43,10 +40,7 @@ class TestDeleteCard(TestCase):
         card_list = CardList.objects.create(title='Bar', board=board)
 
         self.card = Card.objects.create(
-            title="Foo",
-            description="Bar",
-            position=1,
-            card_list=card_list
+            title='Foo', description='Bar', position=1, card_list=card_list
         )
 
         self.client = Client()
@@ -67,10 +61,7 @@ class TestPutCard(TestCase):
         card_list = CardList.objects.create(title='Bar', board=board)
 
         self.card = Card.objects.create(
-            title="Foo",
-            description="Bar",
-            position=1,
-            card_list=card_list
+            title='Foo', description='Bar', position=1, card_list=card_list
         )
 
         self.client = Client()
@@ -125,12 +116,14 @@ class TestCreateCard(TestCase):
     def test_create_card(self):
         r = self.client.post(
             self.create_card_endpoint,
-            data=json.dumps({
-                'title': self.card_title,
-                'description': self.card_description,
-                'position': self.position,
-                'card_list': self.card_list.pk
-            }),
+            data=json.dumps(
+                {
+                    'title': self.card_title,
+                    'description': self.card_description,
+                    'position': self.position,
+                    'card_list': self.card_list.pk
+                }
+            ),
             content_type='application/json'
         )
 

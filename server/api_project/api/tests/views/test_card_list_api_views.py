@@ -5,7 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from ...models import Board, CardList, User
+from ...models import Board, Card, CardList, User
 from ...serializers import CardListSerializer
 
 
@@ -13,7 +13,25 @@ class TestGetCardList(TestCase):
     def setUp(self):
         user = User.objects.create(firebase_uid=str(uuid4()))
         board = Board.objects.create(title='Foo', user=user)
+
         self.card_list = CardList.objects.create(title='Bar', board=board)
+
+        Card.objects.bulk_create(
+            [
+                Card(
+                    title='Foo',
+                    description='Bar',
+                    position=1,
+                    card_list=self.card_list
+                ),
+                Card(
+                    title='Foo',
+                    description='Bar',
+                    position=2,
+                    card_list=self.card_list
+                )
+            ]
+        )
 
         self.client = Client()
         self.get_delete_update_endpoint = reverse(
@@ -27,6 +45,7 @@ class TestGetCardList(TestCase):
 
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.data, expected.data)
+        self.assertEqual(len(r.data.get('cards')), 2)
 
 
 class TestDeleteCardList(TestCase):
@@ -96,10 +115,12 @@ class TestCreateCardList(TestCase):
     def test_create_card_list(self):
         r = self.client.post(
             self.create_card_list_endpoint,
-            data=json.dumps({
-                'title': self.card_list_title,
-                'board': self.board.pk
-            }),
+            data=json.dumps(
+                {
+                    'title': self.card_list_title,
+                    'board': self.board.pk
+                }
+            ),
             content_type='application/json'
         )
 

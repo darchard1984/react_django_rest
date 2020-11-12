@@ -2,16 +2,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Board, User, CardList, Card
-from .serializers import (
-    BoardSerializer,
-    BoardWriteSerializer,
-    CardListSerializer,
-    CardListWriteSerializer,
-    UserSerializer,
-    CardSerializer,
-    CardWriteSerializer
-)
+from .models import Board, Card, CardList, User
+from .serializers import (BoardSerializer, BoardWriteSerializer,
+                          CardListSerializer, CardListWriteSerializer,
+                          CardSerializer, CardWriteSerializer, UserSerializer)
 
 
 def _handle_get_delete_update(request, pk, serializer, model):

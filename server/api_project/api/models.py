@@ -18,7 +18,9 @@ class User(BaseModel):
 
 class Board(BaseModel):
     title = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='boards'
+    )
 
     def __str__(self):
         return f'{self.title}'
@@ -26,7 +28,9 @@ class Board(BaseModel):
 
 class CardList(BaseModel):
     title = models.CharField(max_length=100)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(
+        Board, on_delete=models.CASCADE, related_name='card_lists'
+    )
 
     def __str__(self):
         return f'{self.title}'
@@ -36,7 +40,9 @@ class Card(BaseModel):
     title = models.CharField(max_length=100)
     description = models.TextField()
     position = models.IntegerField()
-    card_list = models.ForeignKey(CardList, on_delete=models.CASCADE)
+    card_list = models.ForeignKey(
+        CardList, on_delete=models.CASCADE, related_name='cards'
+    )
 
     def __str__(self):
         return f'{self.title}'

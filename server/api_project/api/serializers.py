@@ -5,18 +5,23 @@ from .models import Board, Card, CardList, User
 
 # USER SERIALIZERS
 class UserSerializer(serializers.ModelSerializer):
+    boards = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+
     class Meta:
         model = User
-        fields = ('pk', 'firebase_uid', 'created_at', 'updated_at')
+        fields = ('pk', 'firebase_uid', 'boards', 'created_at', 'updated_at')
 
 
 # BOARD SERIALIZERS
 class BoardSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    card_lists = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
     class Meta:
         model = Board
-        fields = ('pk', 'title', 'user', 'created_at', 'updated_at')
+        fields = (
+            'pk', 'title', 'user', 'card_lists', 'created_at', 'updated_at'
+        )
 
 
 class BoardWriteSerializer(serializers.ModelSerializer):
@@ -30,10 +35,11 @@ class BoardWriteSerializer(serializers.ModelSerializer):
 # CARD LIST SERIALIZERS
 class CardListSerializer(serializers.ModelSerializer):
     board = serializers.PrimaryKeyRelatedField(read_only=True)
+    cards = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
     class Meta:
         model = CardList
-        fields = ('pk', 'title', 'board', 'created_at', 'updated_at')
+        fields = ('pk', 'title', 'board', 'cards', 'created_at', 'updated_at')
 
 
 class CardListWriteSerializer(serializers.ModelSerializer):
@@ -58,7 +64,8 @@ class CardSerializer(serializers.ModelSerializer):
 
 class CardWriteSerializer(serializers.ModelSerializer):
     card_list = serializers.PrimaryKeyRelatedField(
-        queryset=CardList.objects.all())
+        queryset=CardList.objects.all()
+    )
 
     class Meta:
         model = Card

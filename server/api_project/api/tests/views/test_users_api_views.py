@@ -5,7 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from ...models import User
+from ...models import Board, User
 from ...serializers import UserSerializer
 
 
@@ -13,6 +13,13 @@ class TestGetUser(TestCase):
     def setUp(self):
         self.user_uid = str(uuid4())
         self.user = User.objects.create(firebase_uid=self.user_uid)
+
+        Board.objects.bulk_create(
+            [
+                Board(title='Foo', user=self.user),
+                Board(title='Bar', user=self.user),
+            ]
+        )
 
         self.client = Client()
         self.get_delete_update_endpoint = reverse(
@@ -26,6 +33,7 @@ class TestGetUser(TestCase):
 
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.data, expected.data)
+        self.assertEqual(len(r.data.get('boards')), 2)
 
 
 class TestDeleteUser(TestCase):

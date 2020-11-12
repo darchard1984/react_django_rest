@@ -5,7 +5,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from ...models import Board, User
+from ...models import Board, CardList, User
 from ...serializers import BoardSerializer
 
 
@@ -13,6 +13,13 @@ class TestGetBoard(TestCase):
     def setUp(self):
         self.board = Board.objects.create(
             title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
+        )
+
+        CardList.objects.bulk_create(
+            [
+                CardList(title='Foo', board=self.board),
+                CardList(title='Bar', board=self.board)
+            ]
         )
 
         self.client = Client()
@@ -27,6 +34,7 @@ class TestGetBoard(TestCase):
 
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertEqual(r.data, expected.data)
+        self.assertEqual(len(r.data.get('card_lists')), 2)
 
 
 class TestDeleteBoard(TestCase):

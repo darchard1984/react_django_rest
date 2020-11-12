@@ -46,6 +46,20 @@ class CardListWriteSerializer(serializers.ModelSerializer):
 
 # CARD SERIALIZERS
 class CardSerializer(serializers.ModelSerializer):
+    card_list = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Card
+        fields = (
+            'pk', 'title', 'description', 'position', 'card_list',
+            'created_at', 'updated_at'
+        )
+
+
+class CardWriteSerializer(serializers.ModelSerializer):
+    card_list = serializers.PrimaryKeyRelatedField(
+        queryset=CardList.objects.all())
+
     class Meta:
         model = Card
         fields = (

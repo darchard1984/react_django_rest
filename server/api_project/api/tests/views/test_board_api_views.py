@@ -40,7 +40,7 @@ class TestDeleteBoard(TestCase):
             'get_delete_update_board', kwargs={'pk': self.board.pk}
         )
 
-    def test_delete_board(self):
+    def test_delete_bqoard(self):
         r = self.client.delete(self.get_delete_update_endpoint)
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)

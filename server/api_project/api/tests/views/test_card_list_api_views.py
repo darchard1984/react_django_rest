@@ -88,7 +88,7 @@ class TestCreateCardList(TestCase):
     def setUp(self):
         self.user = User.objects.create(firebase_uid=str(uuid4()))
         self.board = Board.objects.create(title='Foo', user=self.user)
-        self.card_title = 'Bar'
+        self.card_list_title = 'Bar'
 
         self.client = Client()
         self.create_card_list_endpoint = reverse('create_card_list')
@@ -97,16 +97,16 @@ class TestCreateCardList(TestCase):
         r = self.client.post(
             self.create_card_list_endpoint,
             data=json.dumps({
-                'title': self.card_title,
+                'title': self.card_list_title,
                 'board': self.board.pk
             }),
             content_type='application/json'
         )
 
-        card_list = CardList.objects.get(title=self.card_title)
+        card_list = CardList.objects.get(title=self.card_list_title)
 
         self.assertTrue(isinstance(card_list, CardList))
         self.assertTrue(isinstance(card_list.board, Board))
         self.assertTrue(isinstance(card_list.board.user, User))
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(card_list.title, self.card_title)
+        self.assertEqual(card_list.title, self.card_list_title)

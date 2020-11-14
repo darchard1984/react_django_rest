@@ -11,7 +11,7 @@ from ...serializers import CardListSerializer
 
 class TestGetCardList(TestCase):
     def setUp(self):
-        user = User.objects.create(firebase_uid=str(uuid4()))
+        user = User.objects.create_user(firebase_uid=str(uuid4()))
         board = Board.objects.create(title='Foo', user=user)
 
         self.card_list = CardList.objects.create(title='Bar', board=board)
@@ -50,7 +50,7 @@ class TestGetCardList(TestCase):
 
 class TestDeleteCardList(TestCase):
     def setUp(self):
-        user = User.objects.create(firebase_uid=str(uuid4()))
+        user = User.objects.create_user(firebase_uid=str(uuid4()))
         board = Board.objects.create(title='Foo', user=user)
         self.card_list = CardList.objects.create(title='Bar', board=board)
 
@@ -67,7 +67,7 @@ class TestDeleteCardList(TestCase):
 
 class TestPutCardList(TestCase):
     def setUp(self):
-        user = User.objects.create(firebase_uid=str(uuid4()))
+        user = User.objects.create_user(firebase_uid=str(uuid4()))
         board = Board.objects.create(title='Foo', user=user)
         self.card_list = CardList.objects.create(title='Bar', board=board)
 
@@ -105,7 +105,7 @@ class TestPutCardList(TestCase):
 
 class TestCreateCardList(TestCase):
     def setUp(self):
-        self.user = User.objects.create(firebase_uid=str(uuid4()))
+        self.user = User.objects.create_user(firebase_uid=str(uuid4()))
         self.board = Board.objects.create(title='Foo', user=self.user)
         self.card_list_title = 'Bar'
 

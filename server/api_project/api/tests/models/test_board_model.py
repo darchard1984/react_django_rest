@@ -1,4 +1,3 @@
-import uuid
 from uuid import uuid4
 
 from django.test import TestCase
@@ -13,7 +12,9 @@ class TestBoardModel(TestCase):
 
         Board.objects.create(
             title=self.board_title,
-            user=User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+            user=User.objects.create_user(
+                firebase_uid=self.user_mock_firebase_uid
+            )
         )
 
     def test_board_model(self):
@@ -27,9 +28,11 @@ class TestBoardModel(TestCase):
 
 class TestManyBoardsForUser(TestCase):
     def setUp(self):
-        self.user_mock_firebase_uid = str(uuid.uuid4())
+        self.user_mock_firebase_uid = str(uuid4())
 
-        user = User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+        user = User.objects.create_user(
+            firebase_uid=self.user_mock_firebase_uid
+        )
         boards = [Board(title='Foo', user=user), Board(title='Bar', user=user)]
 
         Board.objects.bulk_create(boards)

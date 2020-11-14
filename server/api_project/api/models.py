@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
+
+from .managers import CustomUserManager
 
 
 class BaseModel(models.Model):
@@ -9,8 +12,13 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class User(BaseModel):
-    firebase_uid = models.CharField(max_length=100)
+class User(AbstractBaseUser, BaseModel):
+    firebase_uid = models.CharField(max_length=100, unique=True)
+
+    USERNAME_FIELD = 'firebase_uid'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return f'{self.firebase_uid}'

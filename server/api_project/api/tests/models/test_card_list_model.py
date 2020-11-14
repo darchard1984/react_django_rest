@@ -11,7 +11,9 @@ class TestCardListModel(TestCase):
         self.card_list_title = 'Bar'
         self.user_mock_firebase_uid = str(uuid4())
 
-        user = User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+        user = User.objects.create_user(
+            firebase_uid=self.user_mock_firebase_uid
+        )
         board = Board.objects.create(title=self.board_title, user=user)
         CardList.objects.create(title=self.card_list_title, board=board)
 
@@ -29,7 +31,9 @@ class TestManyCardListsForBoard(TestCase):
         self.board_title = 'Foo'
         self.user_mock_firebase_uid = str(uuid4())
 
-        user = User.objects.create(firebase_uid=self.user_mock_firebase_uid)
+        user = User.objects.create_user(
+            firebase_uid=self.user_mock_firebase_uid
+        )
         board = Board.objects.create(title=self.board_title, user=user)
 
         card_lists = [

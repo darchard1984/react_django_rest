@@ -12,7 +12,7 @@ from ...serializers import UserSerializer
 class TestGetUser(TestCase):
     def setUp(self):
         self.user_uid = str(uuid4())
-        self.user = User.objects.create(firebase_uid=self.user_uid)
+        self.user = User.objects.create_user(firebase_uid=self.user_uid)
 
         Board.objects.bulk_create(
             [
@@ -39,7 +39,7 @@ class TestGetUser(TestCase):
 class TestDeleteUser(TestCase):
     def setUp(self):
         self.user_uid = str(uuid4())
-        self.user = User.objects.create(firebase_uid=self.user_uid)
+        self.user = User.objects.create_user(firebase_uid=self.user_uid)
 
         self.client = Client()
         self.get_delete_update_endpoint = reverse(
@@ -55,7 +55,7 @@ class TestDeleteUser(TestCase):
 class TestPutUser(TestCase):
     def setUp(self):
         self.user_uid = str(uuid4())
-        self.user = User.objects.create(firebase_uid=self.user_uid)
+        self.user = User.objects.create_user(firebase_uid=self.user_uid)
 
         self.client = Client()
         self.get_delete_update_endpoint = reverse(

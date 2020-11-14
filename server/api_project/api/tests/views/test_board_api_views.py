@@ -12,7 +12,8 @@ from ...serializers import BoardSerializer
 class TestGetBoard(TestCase):
     def setUp(self):
         self.board = Board.objects.create(
-            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
+            title='Foo',
+            user=User.objects.create_user(firebase_uid=str(uuid4()))
         )
 
         CardList.objects.bulk_create(
@@ -40,7 +41,8 @@ class TestGetBoard(TestCase):
 class TestDeleteBoard(TestCase):
     def setUp(self):
         self.board = Board.objects.create(
-            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
+            title='Foo',
+            user=User.objects.create_user(firebase_uid=str(uuid4()))
         )
 
         self.client = Client()
@@ -57,7 +59,8 @@ class TestDeleteBoard(TestCase):
 class TestPutBoard(TestCase):
     def setUp(self):
         self.board = Board.objects.create(
-            title='Foo', user=User.objects.create(firebase_uid=str(uuid4()))
+            title='Foo',
+            user=User.objects.create_user(firebase_uid=str(uuid4()))
         )
 
         self.client = Client()
@@ -100,7 +103,7 @@ class TestCreateBoard(TestCase):
         self.board_title = 'Foo'
 
         self.user_mock_firebase_uid = str(uuid4())
-        self.user = User.objects.create(
+        self.user = User.objects.create_user(
             firebase_uid=self.user_mock_firebase_uid
         )
 

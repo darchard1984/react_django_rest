@@ -22,6 +22,7 @@ mypy = "*"
 pytest-mypy = "*"
 pytest-django = "*"
 django-stubs = "*"
+mock = "*"
 
 [requires]
 python_version = "3.8"

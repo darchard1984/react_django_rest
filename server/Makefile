@@ -10,7 +10,7 @@ type:
 	docker-compose run --rm pipenv run mypy .
 
 test:
-	docker-compose run --rm pipenv run pytest -vvv -s
+	docker-compose run --rm pipenv run pytest ./firebase_auth/ -vvv -s
 
 
 

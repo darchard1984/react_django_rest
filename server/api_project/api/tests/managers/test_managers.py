@@ -8,7 +8,6 @@ from ...models import User
 class TestCustomUserManager(TestCase):
     def test_create_user(self):
         mock_firebase_uid = str(uuid4())
-
         user = User(firebase_uid=mock_firebase_uid)
         User.objects.create_user(user)
 
@@ -17,6 +16,5 @@ class TestCustomUserManager(TestCase):
             user.email
         with self.assertRaises(AttributeError):
             user.username
-
         with self.assertRaises(ValueError):
             User.objects.create_user(firebase_uid=None)

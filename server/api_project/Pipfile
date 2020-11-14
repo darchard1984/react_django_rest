@@ -8,6 +8,7 @@ Django = "*"
 psycopg2 = "*"
 djangorestframework = "*"
 uWSGI = "*"
+firebase-admin = "*"
 
 [dev-packages]
 unify = "*"
@@ -24,4 +25,3 @@ django-stubs = "*"
 
 [requires]
 python_version = "3.8"
-

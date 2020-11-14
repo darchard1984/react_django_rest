@@ -32,7 +32,8 @@ ALLOWED_HOSTS = ['0.0.0.0']
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'api'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'api',
+    'firebase_auth'
 ]
 
 MIDDLEWARE = [

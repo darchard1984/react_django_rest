@@ -5,3 +5,5 @@ database_data
 .coverage
 .pytest_cache
 .DS_Store
+
+node_modules

@@ -18,12 +18,10 @@ class FirebaseAuthentication():
             # Verify the ID token and check if the token has been revoked by
             # passing check_revoked=True.
             decoded = auth.verify_id_token(id_token, check_revoked=True)
+            firebase_uid = decoded['uid']
         except Exception:
             raise Unauthorized('Token is not valid')
 
-        if not decoded.get('uid'):
-            return None
+        user, _ = User.objects.get_or_create(firebase_uid=firebase_uid)
 
-        user, _ = User.objects.get_or_create(firebase_uid=decoded.get('uid'))
-
-        return user or None
+        return (user, None)

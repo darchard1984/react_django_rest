@@ -19,5 +19,6 @@ from django.urls import path
 
 urlpatterns = [
     path('', include('api.urls')),
+    path('', include('firebase_auth.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -1,9 +1,12 @@
+from uuid import uuid4
+
 from django.test import TestCase
 from mock import Mock, patch
-from uuid import uuid4
+
+from api.models import User
+
 from ..custom_exceptions import NoAuthenticationToken, Unauthorized
 from ..firebase_authentication import FirebaseAuthentication
-from api.models import User
 
 
 def _mock_firebase_admin_auth(decoded):
@@ -32,10 +35,11 @@ class TestFirebaseAuthentication(TestCase):
         'firebase_auth.firebase_authentication.auth',
         _mock_firebase_admin_auth({})
     )
-    def test_authenticate_returns_none_when_no_uid_in_decode(self):
+    def test_authenticate_raises_unauthorized_when_no_uid_in_decode(self):
         request = Mock()
 
-        self.assertEqual(FirebaseAuthentication().authenticate(request), None)
+        with self.assertRaises(Unauthorized):
+            FirebaseAuthentication().authenticate(request)
 
     @patch(
         'firebase_auth.firebase_authentication.auth',
@@ -44,6 +48,6 @@ class TestFirebaseAuthentication(TestCase):
     def test_authenticate_returns_user(self):
         request = Mock()
 
-        user = FirebaseAuthentication().authenticate(request)
+        authenticated = FirebaseAuthentication().authenticate(request)
 
-        self.assertTrue(isinstance(user, User))
+        self.assertTrue(isinstance(authenticated[0], User))

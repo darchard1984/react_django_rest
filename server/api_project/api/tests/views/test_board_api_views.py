@@ -1,12 +1,23 @@
 import json
 from uuid import uuid4
 
+import pytest
 from django.test import Client, TestCase
 from django.urls import reverse
+from mock import Mock, patch
 from rest_framework import status
 
 from ...models import Board, CardList, User
 from ...serializers import BoardSerializer
+
+
+@pytest.fixture(scope='module', autouse=True)
+def patch_authentication():
+    with patch(
+        'firebase_auth.firebase_authentication.FirebaseAuthentication.authenticate',
+        return_value=(Mock(), None)
+    ):
+        yield
 
 
 class TestGetBoard(TestCase):

@@ -1,4 +1,4 @@
-#### Django/React Demo Project
+## Django REST / React Drag n Drop UI Demo
 
 ### What does this do?
 As an exercise, I decided to build a Trello like web application using Next.js on the client, and Django REST framework for the API.

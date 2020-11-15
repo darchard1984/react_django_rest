@@ -41,14 +41,9 @@ def _handle_post(request, serializer):
 
 
 # USER VIEWS
-@api_view(['GET', 'DELETE', 'PUT'])
-def get_delete_update_user(request, pk):
+@api_view(['GET'])
+def get_user(request, pk):
     return _handle_get_delete_update(request, pk, UserSerializer, User)
-
-
-@api_view(['POST'])
-def create_user(request):
-    return _handle_post(request, UserSerializer)
 
 
 # BOARD VIEWS

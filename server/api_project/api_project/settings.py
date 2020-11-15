@@ -32,7 +32,8 @@ ALLOWED_HOSTS = ['0.0.0.0']
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'api'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework',
+    'api', 'firebase_auth'
 ]
 
 MIDDLEWARE = [
@@ -123,7 +124,12 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [],
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+    'TEST_REQUEST_DEFAULT_FORMAT':
+    'json',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'firebase_auth.firebase_authentication.FirebaseAuthentication',
+    ),
 }
 
 AUTH_USER_MODEL = 'api.User'

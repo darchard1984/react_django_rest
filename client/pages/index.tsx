@@ -50,7 +50,7 @@ export default class Home extends React.Component<any, any> {
         >
           <FormControl width={['80%', '400px']}>
             <FormLabel mb="12" fontSize="lg">
-              Start by giving your board a title.
+              Let's start by giving your board a title.
             </FormLabel>
             <Flex>
               <Input

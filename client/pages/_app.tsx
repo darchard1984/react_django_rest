@@ -1,8 +1,7 @@
-import '../styles/globals.css'
 import { ThemeProvider, CSSReset } from '@chakra-ui/react'
 import customTheme from '../theme'
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }) {
   return (
     <ThemeProvider theme={customTheme}>
       <CSSReset />
@@ -11,4 +10,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default App

@@ -1,20 +1,21 @@
 import Head from 'next/head'
 import React from 'react'
+import BoardTitleForm from '../components/board-title-form/BoardTitleForm'
 
-import {
-  Flex,
-  Input,
-  Box,
-  FormControl,
-  FormLabel,
-  Button,
-} from '@chakra-ui/react'
+import { Flex, Box } from '@chakra-ui/react'
 
 export default class Home extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
-    this.state = {}
+    this.state = {
+      boardTitle: '',
+    }
   }
+
+  setBoardTitleState = (values) => {
+    this.setState({ ...values }, () => console.log(this.state))
+  }
+
   render() {
     return (
       <div>
@@ -48,28 +49,10 @@ export default class Home extends React.Component<any, any> {
           ]}
           alignItems="center"
         >
-          <FormControl width={['80%', '400px']}>
-            <FormLabel mb="12" fontSize="lg">
-              Let's start by giving your board a title.
-            </FormLabel>
-            <Flex>
-              <Input
-                isRequired={true}
-                fontSize="md"
-                type="text"
-                variant="flushed"
-              ></Input>
-              <Button
-                variant="outline"
-                ml={['4', '8']}
-                size="sm"
-                alignSelf="flex-end"
-                colorScheme="blue"
-              >
-                Done
-              </Button>
-            </Flex>
-          </FormControl>
+          <BoardTitleForm
+            setState={this.setBoardTitleState}
+            boardTitle={this.state.boardTitle}
+          ></BoardTitleForm>
         </Flex>
       </div>
     )

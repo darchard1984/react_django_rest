@@ -3,17 +3,71 @@ import React from 'react'
 import BoardTitleForm from '../components/board-title-form/BoardTitleForm'
 
 import { Flex, Box } from '@chakra-ui/react'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import ApiClient from '../services/api'
+import { HomeState } from './types'
 
-export default class Home extends React.Component<any, any> {
+if (!firebase.apps.length) {
+  firebase.initializeApp({
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  })
+}
+
+const client = new ApiClient()
+
+export default class Home extends React.Component<any, HomeState> {
   constructor(props: any) {
     super(props)
     this.state = {
+      currentUserUid: '',
       boardTitle: '',
+      persist: false,
     }
   }
 
-  setBoardTitleState = (values) => {
-    this.setState({ ...values }, () => console.log(this.state))
+  async componentDidMount() {
+    let currentUser = firebase.auth().currentUser
+    if (!currentUser) {
+      await this.signIn()
+      currentUser = firebase.auth().currentUser
+    }
+
+    const idToken = await currentUser?.getIdToken()
+    const authenticate = await client.get('/authenticate/', {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    })
+
+    if (
+      authenticate.status === 200 &&
+      authenticate.data.firebase_uid === currentUser.uid
+    ) {
+      this.setState({ persist: true })
+    }
+
+    this.setState({ currentUserUid: currentUser.uid })
+  }
+
+  async signIn(): Promise<firebase.auth.UserCredential | undefined> {
+    try {
+      const r = await firebase.auth().signInAnonymously()
+      return r
+    } catch (e) {
+      // TODO: Handle error, send to Sentry
+    }
+  }
+
+  setBoardTitleState = (values: { boardTitle: string }) => {
+    this.setState({ ...values })
   }
 
   render() {

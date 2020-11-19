@@ -9,6 +9,7 @@ psycopg2 = "*"
 djangorestframework = "*"
 uWSGI = "*"
 firebase-admin = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 unify = "*"

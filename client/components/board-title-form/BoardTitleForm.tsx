@@ -10,8 +10,13 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react'
 
-export default class BoardTitleForm extends React.Component<any, any> {
-  constructor(props: any) {
+import { BoardTitleFormState, BoardTitleFormProps } from './types'
+
+export default class BoardTitleForm extends React.Component<
+  BoardTitleFormProps,
+  BoardTitleFormState
+> {
+  constructor(props: BoardTitleFormProps) {
     super(props)
     this.state = {
       boardTitle: props.boardTitle,
@@ -22,7 +27,7 @@ export default class BoardTitleForm extends React.Component<any, any> {
     return (
       <Formik
         initialValues={{ boardTitle: this.state.boardTitle }}
-        onSubmit={(values) => {
+        onSubmit={(values: { boardTitle: string }) => {
           this.props.setState({ ...values })
         }}
       >

@@ -51,10 +51,8 @@ export default class Home extends React.Component<any, HomeState> {
       authenticate.status === 200 &&
       authenticate.data.firebase_uid === currentUser.uid
     ) {
-      this.setState({ persist: true })
+      this.setState({ persist: true, currentUserUid: currentUser.uid })
     }
-
-    this.setState({ currentUserUid: currentUser.uid })
   }
 
   async signIn(): Promise<firebase.auth.UserCredential | undefined> {

@@ -23,7 +23,7 @@ if (!firebase.apps.length) {
 
 const client = new ApiClient()
 
-export default class Home extends React.Component<any, HomeState> {
+class Home extends React.Component<any, HomeState> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -34,13 +34,17 @@ export default class Home extends React.Component<any, HomeState> {
   }
 
   async componentDidMount() {
-    let currentUser = firebase.auth().currentUser
+    let currentUser = await firebase.auth().currentUser
     if (!currentUser) {
       await this.signIn()
-      currentUser = firebase.auth().currentUser
+      currentUser = await firebase.auth().currentUser
     }
 
-    const idToken = await currentUser?.getIdToken()
+    await this.authenticate(currentUser)
+  }
+
+  async authenticate(currentUser: firebase.User) {
+    const idToken = await currentUser.getIdToken()
     const authenticate = await client.get('/authenticate/', {
       headers: {
         Authorization: `Bearer ${idToken}`,
@@ -110,3 +114,5 @@ export default class Home extends React.Component<any, HomeState> {
     )
   }
 }
+
+export default Home

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Formik, Field, FormikProps, Form } from 'formik'
+import { Formik, Field, Form, FormikProps } from 'formik'
 
 import {
   Flex,
@@ -11,14 +11,29 @@ import {
 } from '@chakra-ui/react'
 
 import { BoardTitleFormProps } from './types'
+import BoardTitleFormSchema from './BoardTitleFormSchema'
+import ApiClient from '../../services/api'
+
+const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
+  const _handleSumbit = async (values: { boardTitle: string }) => {
+    const { boardTitle } = BoardTitleFormSchema.cast(values)
+    props.setState({ boardTitle })
+
+    const resp = await client.post(
+      '/board/',
+      {
+        data: { title: boardTitle, user: props.currentUser.pk },
+      },
+      { headers: client.setAuthHeader(props.currentUser.idToken) }
+    )
+  }
   return (
     <Formik
       initialValues={{ boardTitle: props.boardTitle }}
-      onSubmit={(values: { boardTitle: string }) => {
-        props.setState({ ...values })
-      }}
+      onSubmit={_handleSumbit}
+      validationSchema={BoardTitleFormSchema}
     >
       {(props) => (
         <Form>
@@ -51,8 +66,8 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
                   >
                     Done
                   </Button>
-                  <FormErrorMessage>{form.errors.boardTitle}</FormErrorMessage>
                 </Flex>
+                <FormErrorMessage>{form.errors.boardTitle}</FormErrorMessage>
               </FormControl>
             )}
           </Field>

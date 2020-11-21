@@ -122,8 +122,10 @@ class TestCreateBoard(TestCase):
         r = self.client.post(
             self.create_board_endpoint,
             data=json.dumps({
-                'title': self.board_title,
-                'user': self.user.pk
+                'data': {
+                    'title': self.board_title,
+                    'user': self.user.pk
+                }
             }),
             content_type='application/json'
         )

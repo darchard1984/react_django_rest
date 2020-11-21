@@ -1,5 +1,8 @@
 export type HomeState = {
-  currentUserUid: string
+  currentUser: {
+    uid: string
+    idToken: string
+    pk: number | null
+  }
   boardTitle: string
-  persist: boolean
 }

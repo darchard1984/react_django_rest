@@ -32,7 +32,8 @@ def _handle_get_delete_update(request, pk, serializer, model):
 
 
 def _handle_post(request, serializer):
-    serialized = serializer(data=request.data)
+    serialized = serializer(data=request.data.get('data'))
+
     if serialized.is_valid():
         serialized.save()
         return Response(serialized.data, status=status.HTTP_201_CREATED)

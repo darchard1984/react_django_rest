@@ -14,12 +14,18 @@ class ApiClient {
     console.log(error)
   }
 
+  setAuthHeader(token: string) {
+    return {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+
   async get(
     path: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse | undefined> {
     try {
-      const resp = await this.api.get(path, config)
+      const resp = await this.api.get(path, config || {})
       return resp
     } catch (error) {
       this._handleError(error)
@@ -28,10 +34,11 @@ class ApiClient {
 
   async post(
     path: string,
+    data: any,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse | undefined> {
     try {
-      const resp = await this.api.post(path, config || {})
+      const resp = await this.api.post(path, data, config || {})
       return resp
     } catch (error) {
       this._handleError(error)

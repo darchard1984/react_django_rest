@@ -34,14 +34,6 @@ type HomeProps = {
   }
 }
 
-type AuthenticatedUserResponse = {
-  pk: number
-  firebase_uid: string
-  boards: number[]
-  created_at: string
-  updated_at: string
-  idToken: string
-}
 const client = new ApiClient()
 
 class Home extends React.Component<HomeProps, HomeState> {

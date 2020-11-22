@@ -20,7 +20,7 @@ class ApiClient {
 
   private _handleError(error: any): void {
     if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
-      // TODO Handle error, push to Sentry
+      // TODO: Send to Sentry
     } else {
       console.log(error)
     }

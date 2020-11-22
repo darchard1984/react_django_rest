@@ -46,42 +46,43 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
       validationSchema={BoardTitleFormSchema}
     >
       {(props) => (
-        <Form>
-          <Field name="boardTitle">
-            {({ field, form }) => (
-              <FormControl
-                width={['80%', '400px']}
-                isInvalid={form.errors.boardTitle && form.touched.boardTitle}
-              >
-                <FormLabel mb="12" fontSize="lg" htmlFor="board-title">
-                  Let's start by giving your board a title.
-                </FormLabel>
-                <Flex>
-                  <Input
-                    {...field}
-                    id="board-title"
-                    isRequired={true}
-                    fontSize="md"
-                    type="text"
-                    variant="flushed"
-                  ></Input>
+        <Flex width={['80%', '400px']}>
+          <Form>
+            <Field name="boardTitle">
+              {({ field, form }) => (
+                <FormControl
+                  isInvalid={form.errors.boardTitle && form.touched.boardTitle}
+                >
+                  <FormLabel mb="12" fontSize="lg" htmlFor="board-title">
+                    Let's start by giving your board a title.
+                  </FormLabel>
+                  <Flex>
+                    <Input
+                      {...field}
+                      id="board-title"
+                      isRequired={true}
+                      fontSize="md"
+                      type="text"
+                      variant="flushed"
+                    ></Input>
 
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    ml={['4', '8']}
-                    size="sm"
-                    alignSelf="flex-end"
-                    colorScheme="blue"
-                  >
-                    Done
-                  </Button>
-                </Flex>
-                <FormErrorMessage>{form.errors.boardTitle}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
-        </Form>
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      ml={['4', '8']}
+                      size="sm"
+                      alignSelf="flex-end"
+                      colorScheme="blue"
+                    >
+                      Done
+                    </Button>
+                  </Flex>
+                  <FormErrorMessage>{form.errors.boardTitle}</FormErrorMessage>
+                </FormControl>
+              )}
+            </Field>
+          </Form>
+        </Flex>
       )}
     </Formik>
   )

@@ -14,10 +14,10 @@ import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './schema'
 import ApiClient from '../../services/api'
 import { useRouter } from 'next/router'
-const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
   const router = useRouter()
+  const client = new ApiClient()
 
   const _handleSumbit = async (
     values: { boardTitle: string },

@@ -34,8 +34,6 @@ type HomeProps = {
   }
 }
 
-const client = new ApiClient()
-
 class Home extends React.Component<HomeProps, HomeState> {
   constructor(props: any) {
     super(props)
@@ -111,6 +109,8 @@ class Home extends React.Component<HomeProps, HomeState> {
 }
 
 export default Home
+
+const client = new ApiClient()
 
 export async function getServerSideProps() {
   const currentUser = await getCurrentUser()

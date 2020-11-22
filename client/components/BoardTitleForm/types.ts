@@ -3,11 +3,10 @@ export type BoardTitleFormState = {
 }
 
 export type BoardTitleFormProps = {
-  boardTitle: string
-  setState: (values: BoardTitleFormState) => void
   currentUser: {
     uid: string
     idToken: string
     pk: number
   }
+  setState: () => Promise<void>
 }

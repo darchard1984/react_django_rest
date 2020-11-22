@@ -1,10 +1,9 @@
 import React from 'react'
 import BoardTitleForm from '../components/BoardTitleForm'
 import firebase from 'firebase/app'
-import { Flex, Box, Text } from '@chakra-ui/react'
+import { Flex, Box, Text, Spinner } from '@chakra-ui/react'
 import auth from '../lib/firebase'
 import ApiClient from '../services/api'
-import { AxiosResponse } from 'axios'
 
 type CurrentUser = {
   uid: string
@@ -15,7 +14,6 @@ type CurrentUser = {
 
 type HomeState = {
   currentUser: CurrentUser
-  boardTitle: string
   errors: {
     serverError: {
       status: boolean
@@ -35,6 +33,7 @@ type HomeProps = {
 }
 
 class Home extends React.Component<HomeProps, HomeState> {
+  client = new ApiClient()
   constructor(props: any) {
     super(props)
     this.state = {
@@ -44,7 +43,6 @@ class Home extends React.Component<HomeProps, HomeState> {
         pk: null,
         boards: [],
       },
-      boardTitle: '',
       errors: {
         serverError: {
           status: false,
@@ -54,17 +52,84 @@ class Home extends React.Component<HomeProps, HomeState> {
     }
   }
 
-  componentDidMount() {
-    this.setState((prev, props) => {
-      return {
-        ...prev,
-        ...props,
-      }
-    })
+  async componentDidMount() {
+    let currentUser = auth.currentUser
+    if (!currentUser) {
+      await this.signIn()
+      currentUser = auth.currentUser
+    }
+
+    await this.authenticate(currentUser)
+    // If the user has boards get all the boards for the user
+    // and populate the full board objects
   }
 
-  setBoardTitleState = (values: { boardTitle: string }) => {
-    this.setState({ ...values })
+  async authenticate(currentUser: firebase.User) {
+    const idToken = await currentUser.getIdToken()
+
+    try {
+      const resp = await this.client.get('/authenticate/', {
+        headers: this.client.setAuthHeader(idToken),
+      })
+
+      if (resp.status === 200 && resp.data.firebase_uid === currentUser.uid) {
+        this.setState({
+          currentUser: {
+            uid: currentUser.uid,
+            idToken,
+            pk: resp.data.pk,
+            boards: resp.data.boards,
+          },
+        })
+      }
+    } catch (e) {
+      this.setState({
+        errors: {
+          serverError: {
+            ...this.state.errors.serverError,
+            status: true,
+          },
+        },
+      })
+    }
+  }
+
+  async signIn(): Promise<firebase.auth.UserCredential | undefined> {
+    try {
+      const r = await auth.signInAnonymously()
+      return r
+    } catch (e) {
+      // TODO: Send to Sentry
+      this.setState({
+        errors: {
+          serverError: {
+            ...this.state.errors.serverError,
+            status: true,
+          },
+        },
+      })
+    }
+  }
+
+  setBoardsState = async () => {
+    const resp = await this.client.get(`/user/${this.state.currentUser.pk}`, {
+      headers: this.client.setAuthHeader(this.state.currentUser.idToken),
+    })
+
+    // make API call here to get user and set full boards state
+
+    if (resp.status === 200) {
+      const boards = resp.data.boards
+      this.setState((prev) => {
+        return {
+          ...prev,
+          currentUser: {
+            ...prev.currentUser,
+            boards,
+          },
+        }
+      })
+    }
   }
 
   render() {
@@ -88,6 +153,11 @@ class Home extends React.Component<HomeProps, HomeState> {
             <Text>{this.state.errors.serverError.message}</Text>
           </Flex>
         </Flex>
+        <Flex display={this.state.currentUser.boards.length ? 'flex' : 'none'}>
+          <Text as="h1">Your boards</Text>
+          <Text>A board</Text>
+        </Flex>
+
         <Flex
           justifyContent="center"
           height={[
@@ -96,12 +166,15 @@ class Home extends React.Component<HomeProps, HomeState> {
             'calc(100vh - 240px)',
           ]}
           alignItems="center"
+          display={!this.state.currentUser.boards.length ? 'flex' : 'none'}
         >
-          <BoardTitleForm
-            setState={this.setBoardTitleState}
-            boardTitle={this.state.boardTitle}
-            currentUser={this.state.currentUser}
-          />
+          <Spinner display={!this.state.currentUser.pk ? 'block' : 'none'} />
+          <Box display={this.state.currentUser.pk ? 'block' : 'none'}>
+            <BoardTitleForm
+              setState={this.setBoardsState}
+              currentUser={this.state.currentUser}
+            />
+          </Box>
         </Flex>
       </Box>
     )
@@ -109,72 +182,3 @@ class Home extends React.Component<HomeProps, HomeState> {
 }
 
 export default Home
-
-const client = new ApiClient()
-
-export async function getServerSideProps() {
-  const currentUser = await getCurrentUser()
-  const idToken = await currentUser.getIdToken()
-
-  let resp: AxiosResponse
-  let callDidError = false
-  try {
-    resp = await client.get('/authenticate/', {
-      headers: client.setAuthHeader(idToken),
-    })
-  } catch (e) {
-    // TODO: Send to Sentry
-    callDidError = true
-  }
-
-  if (callDidError)
-    return {
-      props: {
-        errors: {
-          serverError: {
-            status: true,
-            message:
-              'It looks like something went wrong, please try again later',
-          },
-        },
-      },
-    }
-
-  if (resp.data.boards.length) {
-    return {
-      redirect: {
-        destination: '/board',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {
-      currentUser: {
-        uid: resp.data.firebase_uid,
-        pk: resp.data.pk,
-        boards: resp.data.boards,
-        idToken,
-      },
-    },
-  }
-}
-
-async function getCurrentUser(): Promise<firebase.User> {
-  let currentUser = auth.currentUser
-  if (!currentUser) {
-    await signIn()
-    currentUser = auth.currentUser
-  }
-  return currentUser
-}
-
-async function signIn(): Promise<firebase.auth.UserCredential | undefined> {
-  try {
-    const r = await auth.signInAnonymously()
-    return r
-  } catch (e) {
-    // TODO: Send to Sentry
-  }
-}

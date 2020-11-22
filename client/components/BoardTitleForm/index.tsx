@@ -13,10 +13,8 @@ import {
 import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './schema'
 import ApiClient from '../../services/api'
-import { useRouter } from 'next/router'
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
-  const router = useRouter()
   const client = new ApiClient()
 
   const _handleSumbit = async (
@@ -24,29 +22,27 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
     { setErrors }
   ) => {
     const { boardTitle } = BoardTitleFormSchema.cast(values)
-    props.setState({ boardTitle })
 
     try {
-      const resp = await client.post(
+      await client.post(
         '/board/',
         {
           data: { title: boardTitle, user: props.currentUser.pk },
         },
         { headers: client.setAuthHeader(props.currentUser.idToken) }
       )
+      props.setState()
     } catch (e) {
       setErrors({
         boardTitle:
           'Something went wrong, we could not save your board at this time.',
       })
     }
-
-    router.push('/board')
   }
 
   return (
     <Formik
-      initialValues={{ boardTitle: props.boardTitle }}
+      initialValues={{ boardTitle: '' }}
       onSubmit={_handleSumbit}
       validationSchema={BoardTitleFormSchema}
     >

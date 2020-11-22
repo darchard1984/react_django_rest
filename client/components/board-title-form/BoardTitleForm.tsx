@@ -17,17 +17,27 @@ import ApiClient from '../../services/api'
 const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
-  const _handleSumbit = async (values: { boardTitle: string }) => {
+  const _handleSumbit = async (
+    values: { boardTitle: string },
+    { setErrors }
+  ) => {
     const { boardTitle } = BoardTitleFormSchema.cast(values)
     props.setState({ boardTitle })
 
-    const resp = await client.post(
-      '/board/',
-      {
-        data: { title: boardTitle, user: props.currentUser.pk },
-      },
-      { headers: client.setAuthHeader(props.currentUser.idToken) }
-    )
+    try {
+      const resp = await client.post(
+        '/board/',
+        {
+          data: { title: boardTitle, user: props.currentUser.pk },
+        },
+        { headers: client.setAuthHeader(props.currentUser.idToken) }
+      )
+    } catch (e) {
+      setErrors({
+        boardTitle:
+          'Something went wrong, we could not save your board at this time.',
+      })
+    }
   }
   return (
     <Formik

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import BoardTitleForm from '../components/board-title-form/BoardTitleForm'
 import firebase from 'firebase/app'
-import { Flex, Box } from '@chakra-ui/react'
+import { Flex, Box, Text } from '@chakra-ui/react'
 import auth from '../lib/firebase'
 import ApiClient from '../services/api'
 import { HomeState } from './types'
@@ -19,6 +19,12 @@ class Home extends React.Component<any, HomeState> {
         pk: null,
       },
       boardTitle: '',
+      errors: {
+        serverError: {
+          status: false,
+          message: 'It looks like something went wrong, please try again later',
+        },
+      },
     }
   }
 
@@ -35,19 +41,30 @@ class Home extends React.Component<any, HomeState> {
   async authenticate(currentUser: firebase.User) {
     const idToken = await currentUser.getIdToken()
 
-    const authenticate = await client.get('/authenticate/', {
-      headers: client.setAuthHeader(idToken),
-    })
+    try {
+      const authenticate = await client.get('/authenticate/', {
+        headers: client.setAuthHeader(idToken),
+      })
 
-    if (
-      authenticate.status === 200 &&
-      authenticate.data.firebase_uid === currentUser.uid
-    ) {
+      if (
+        authenticate.status === 200 &&
+        authenticate.data.firebase_uid === currentUser.uid
+      ) {
+        this.setState({
+          currentUser: {
+            uid: currentUser.uid,
+            idToken,
+            pk: authenticate.data.pk,
+          },
+        })
+      }
+    } catch (e) {
       this.setState({
-        currentUser: {
-          uid: currentUser.uid,
-          idToken,
-          pk: authenticate.data.pk,
+        errors: {
+          serverError: {
+            ...this.state.errors.serverError,
+            status: true,
+          },
         },
       })
     }
@@ -58,7 +75,15 @@ class Home extends React.Component<any, HomeState> {
       const r = await auth.signInAnonymously()
       return r
     } catch (e) {
-      // TODO: Handle error, send to Sentry
+      // TODO: Send to Sentry
+      this.setState({
+        errors: {
+          serverError: {
+            ...this.state.errors.serverError,
+            status: true,
+          },
+        },
+      })
     }
   }
 
@@ -89,6 +114,24 @@ class Home extends React.Component<any, HomeState> {
           boxShadow="5px -8px 15px 5px rgba(0,0,0,0.22)"
         >
           <Box ml="8">Lystly</Box>
+        </Flex>
+        <Flex
+          justifyContent="center"
+          mt="8"
+          display={this.state.errors.serverError.status ? 'flex' : 'none'}
+          position="absolute"
+          width="100%"
+        >
+          <Flex
+            backgroundColor="errorRed"
+            border="1px solid red"
+            padding="2"
+            width="400px"
+            justifyContent="center"
+            borderRadius="0.375rem"
+          >
+            <Text>{this.state.errors.serverError.message}</Text>
+          </Flex>
         </Flex>
         <Flex
           justifyContent="center"

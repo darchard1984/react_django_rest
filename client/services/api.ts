@@ -54,6 +54,7 @@ class ApiClient {
   ): Promise<AxiosResponse | undefined> {
     try {
       const resp = await this.api.post(path, data, config || {})
+
       return resp
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)

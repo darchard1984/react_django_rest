@@ -5,4 +5,10 @@ export type HomeState = {
     pk: number | null
   }
   boardTitle: string
+  errors: {
+    serverError: {
+      status: boolean
+      message: string
+    }
+  }
 }

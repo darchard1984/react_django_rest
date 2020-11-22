@@ -164,7 +164,7 @@ export async function getServerSideProps() {
 async function getCurrentUser(): Promise<firebase.User> {
   let currentUser = auth.currentUser
   if (!currentUser) {
-    await this.signIn()
+    await signIn()
     currentUser = auth.currentUser
   }
   return currentUser

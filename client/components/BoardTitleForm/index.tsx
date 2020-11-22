@@ -13,10 +13,12 @@ import {
 import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './schema'
 import ApiClient from '../../services/api'
-
+import { useRouter } from 'next/router'
 const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
+  const router = useRouter()
+
   const _handleSumbit = async (
     values: { boardTitle: string },
     { setErrors }
@@ -38,6 +40,8 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
           'Something went wrong, we could not save your board at this time.',
       })
     }
+
+    router.push('/board')
   }
 
   return (

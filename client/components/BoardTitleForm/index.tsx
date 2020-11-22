@@ -11,15 +11,12 @@ import {
 } from '@chakra-ui/react'
 
 import { BoardTitleFormProps } from './types'
-import BoardTitleFormSchema from './BoardTitleFormSchema'
+import BoardTitleFormSchema from './schema'
 import ApiClient from '../../services/api'
-import { useRouter } from 'next/router'
 
 const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
-  const router = useRouter()
-
   const _handleSumbit = async (
     values: { boardTitle: string },
     { setErrors }
@@ -35,10 +32,6 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
         },
         { headers: client.setAuthHeader(props.currentUser.idToken) }
       )
-
-      if (resp.status === 201) {
-        router.push('/board')
-      }
     } catch (e) {
       setErrors({
         boardTitle:

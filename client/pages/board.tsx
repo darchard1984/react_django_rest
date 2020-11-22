@@ -1,5 +1,9 @@
 import React from 'react'
+
 import { Flex, Box } from '@chakra-ui/react'
+import ApiClient from '../services/api'
+
+const client = new ApiClient()
 
 class Board extends React.Component<any, any> {
   constructor(props: any) {
@@ -9,17 +13,11 @@ class Board extends React.Component<any, any> {
 
   render() {
     return (
-      <Flex
-        fontFamily="system"
-        fontWeight="bold"
-        fontSize="md"
-        width="100%"
-        height="60px"
-        justifyContent="flex-start"
-        alignItems="center"
-      >
-        <Box ml="8">Board</Box>
-      </Flex>
+      <Box>
+        <Flex justifyContent="center" mt="8" position="absolute" width="100%">
+          Board
+        </Flex>
+      </Box>
     )
   }
 }

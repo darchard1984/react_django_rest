@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React from 'react'
-import BoardTitleForm from '../components/board-title-form/BoardTitleForm'
+import BoardTitleForm from '../components/BoardTitleForm'
 import firebase from 'firebase/app'
 import { Flex, Box, Text } from '@chakra-ui/react'
 import auth from '../lib/firebase'
@@ -93,28 +93,7 @@ class Home extends React.Component<any, HomeState> {
 
   render() {
     return (
-      <div>
-        <Head>
-          <title>Lystly</title>
-          <link rel="icon" href="/favicon.ico" />
-          <meta
-            name="viewport"
-            content="initial-scale=1.0, width=device-width"
-          />
-        </Head>
-        <Flex
-          as="nav"
-          fontFamily="system"
-          fontWeight="bold"
-          fontSize="md"
-          width="100%"
-          height="60px"
-          justifyContent="flex-start"
-          alignItems="center"
-          boxShadow="5px -8px 15px 5px rgba(0,0,0,0.22)"
-        >
-          <Box ml="8">Lystly</Box>
-        </Flex>
+      <Box>
         <Flex
           justifyContent="center"
           mt="8"
@@ -148,7 +127,7 @@ class Home extends React.Component<any, HomeState> {
             currentUser={this.state.currentUser}
           ></BoardTitleForm>
         </Flex>
-      </div>
+      </Box>
     )
   }
 }

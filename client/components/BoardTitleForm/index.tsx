@@ -1,5 +1,5 @@
 import React from 'react'
-import { Formik, Field, Form, FormikProps } from 'formik'
+import { Formik, Field, Form } from 'formik'
 
 import {
   Flex,
@@ -13,10 +13,13 @@ import {
 import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './BoardTitleFormSchema'
 import ApiClient from '../../services/api'
+import { useRouter } from 'next/router'
 
 const client = new ApiClient()
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
+  const router = useRouter()
+
   const _handleSumbit = async (
     values: { boardTitle: string },
     { setErrors }
@@ -32,6 +35,10 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
         },
         { headers: client.setAuthHeader(props.currentUser.idToken) }
       )
+
+      if (resp.status === 201) {
+        router.push('/board')
+      }
     } catch (e) {
       setErrors({
         boardTitle:
@@ -39,6 +46,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
       })
     }
   }
+
   return (
     <Formik
       initialValues={{ boardTitle: props.boardTitle }}

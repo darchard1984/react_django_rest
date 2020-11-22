@@ -1,4 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { string } from 'yup'
+
+class ApiClientError extends Error {
+  constructor(message?: string) {
+    super(message)
+    this.name = 'ApiClientError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
 
 class ApiClient {
   api: AxiosInstance
@@ -9,9 +18,12 @@ class ApiClient {
     })
   }
 
-  _handleError(error: any): void {
-    // TODO Handle error, push to Sentry
-    console.log(error)
+  private _handleError(error: any): void {
+    if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
+      // TODO Handle error, push to Sentry
+    } else {
+      console.log(error)
+    }
   }
 
   setAuthHeader(token: string) {
@@ -26,9 +38,12 @@ class ApiClient {
   ): Promise<AxiosResponse | undefined> {
     try {
       const resp = await this.api.get(path, config || {})
+
       return resp
     } catch (error) {
-      this._handleError(error)
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      throw e
     }
   }
 
@@ -41,7 +56,9 @@ class ApiClient {
       const resp = await this.api.post(path, data, config || {})
       return resp
     } catch (error) {
-      this._handleError(error)
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      throw e
     }
   }
 }

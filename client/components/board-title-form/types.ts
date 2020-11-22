@@ -1,4 +1,4 @@
-export type BoardTitleFormState {
+export type BoardTitleFormState = {
   boardTitle: string
 }
 

@@ -1,12 +1,10 @@
+import { User } from '../../pages/index'
+
 export type BoardTitleFormState = {
   boardTitle: string
 }
 
 export type BoardTitleFormProps = {
-  currentUser: {
-    uid: string
-    idToken: string
-    pk: number
-  }
+  user: User
   setState: () => Promise<void>
 }

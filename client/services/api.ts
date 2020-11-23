@@ -22,7 +22,7 @@ class ApiClient {
     if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
       // TODO: Send to Sentry
     } else {
-      console.error(error)
+      console.log(error)
     }
   }
 

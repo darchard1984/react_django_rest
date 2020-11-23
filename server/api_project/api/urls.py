@@ -11,6 +11,11 @@ urlpatterns = [
     ),
     path('api/v1/board/', views.create_board, name='create_board'),
     path(
+        'api/v1/boards/',
+        views.get_boards,
+        name='get_boards'
+    ),
+    path(
         'api/v1/card-list/<int:pk>',
         views.get_delete_update_card_list,
         name='get_delete_update_card_list'

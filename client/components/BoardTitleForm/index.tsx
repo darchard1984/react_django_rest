@@ -27,9 +27,9 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
       await client.post(
         '/board/',
         {
-          data: { title: boardTitle, user: props.currentUser.pk },
+          data: { title: boardTitle, user: props.user.pk },
         },
-        { headers: client.setAuthHeader(props.currentUser.idToken) }
+        { headers: client.setAuthHeader(props.user.idToken) }
       )
       props.setState()
     } catch (e) {
@@ -47,7 +47,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
       validationSchema={BoardTitleFormSchema}
     >
       {(props) => (
-        <Flex width={['80%', '400px']}>
+        <Flex width={['80%', '500px']}>
           <Form>
             <Field name="boardTitle">
               {({ field, form }) => (
@@ -55,7 +55,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
                   isInvalid={form.errors.boardTitle && form.touched.boardTitle}
                 >
                   <FormLabel mb="12" fontSize="lg" htmlFor="board-title">
-                    Let's start by giving your board a title.
+                    Let's start by adding a new board. What shall we call it?
                   </FormLabel>
                   <Flex>
                     <Input
@@ -75,7 +75,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
                       alignSelf="flex-end"
                       colorScheme="blue"
                     >
-                      Done
+                      Add
                     </Button>
                   </Flex>
                   <FormErrorMessage>{form.errors.boardTitle}</FormErrorMessage>

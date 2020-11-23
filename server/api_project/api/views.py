@@ -58,6 +58,15 @@ def create_board(request):
     return _handle_post(request, BoardWriteSerializer)
 
 
+# BOARDS VIEWS
+@api_view(['GET'])
+def get_boards(request):
+    pk_list = request.GET.get('pks').split(',')
+    entities = Board.objects.filter(pk__in=pk_list)
+
+    return Response([BoardSerializer(entity).data for entity in entities])
+
+
 # CARD LIST VIEWS
 @api_view(['GET', 'DELETE', 'PUT'])
 def get_delete_update_card_list(request, pk):

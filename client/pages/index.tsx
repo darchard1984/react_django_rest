@@ -154,6 +154,10 @@ class Home extends React.Component<any, HomeState> {
     this.setState((prev) => {
       return {
         ...prev,
+        user: {
+          ...prev.user,
+          boards: userBoards.map((board) => board.pk),
+        },
         userBoards,
       }
     })
@@ -235,7 +239,7 @@ class Home extends React.Component<any, HomeState> {
             xl: 'calc(100vh - 240px)',
           }}
           alignItems="center"
-          display={!this.state.userBoards.length ? 'flex' : 'none'}
+          display={!this.state.user.boards.length ? 'flex' : 'none'}
         >
           <Spinner display={!this.state.user.pk ? 'block' : 'none'} />
           <Box display={this.state.user.pk ? 'block' : 'none'}>

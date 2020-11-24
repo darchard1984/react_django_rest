@@ -40,21 +40,6 @@ export const BoardPanel: React.FC<BoardPanelProps> = (props) => {
     console.log(boardId)
   }
 
-  const _iconButton = (icon, ariaLabel, onIconClick, boardId) => {
-    const _handleClick = () => {
-      onIconClick(boardId)
-    }
-    return (
-      <IconButton
-        alignSelf="flex-end"
-        aria-label={ariaLabel}
-        icon={icon}
-        size="xs"
-        onClick={_handleClick}
-        ml="2"
-      />
-    )
-  }
   return (
     <Flex
       backgroundColor="#fff"

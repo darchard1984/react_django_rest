@@ -56,7 +56,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
                   isInvalid={form.errors.boardTitle && form.touched.boardTitle}
                 >
                   <FormLabel mb="12" fontSize="lg" htmlFor="board-title">
-                    Let's start by adding a new board. What shall we call it?
+                    Let's start by adding a new board.
                   </FormLabel>
                   <Flex>
                     <Input

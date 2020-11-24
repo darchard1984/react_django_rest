@@ -19,7 +19,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
 
   const _handleSumbit = async (
     values: { boardTitle: string },
-    { setErrors }
+    { setErrors, resetForm }
   ) => {
     const { boardTitle } = BoardTitleFormSchema.cast(values)
 
@@ -31,7 +31,8 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
         },
         { headers: client.setAuthHeader(props.user.idToken) }
       )
-      props.setState()
+      props.setBoardsState()
+      resetForm()
     } catch (e) {
       setErrors({
         boardTitle:

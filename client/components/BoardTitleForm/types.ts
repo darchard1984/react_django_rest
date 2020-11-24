@@ -1,4 +1,4 @@
-import { User } from '../../pages/index'
+import { User } from '../Home/types'
 
 export type BoardTitleFormState = {
   boardTitle: string
@@ -6,5 +6,5 @@ export type BoardTitleFormState = {
 
 export type BoardTitleFormProps = {
   user: User
-  setState: () => Promise<void>
+  setBoardsState: () => Promise<void>
 }

@@ -62,6 +62,21 @@ class ApiClient {
       throw e
     }
   }
+
+  async delete(
+    path: string,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse | undefined> {
+    try {
+      const resp = await this.api.delete(path, config || {})
+
+      return resp
+    } catch (error) {
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      throw e
+    }
+  }
 }
 
 export default ApiClient

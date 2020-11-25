@@ -24,15 +24,16 @@ export const BoardPanel: React.FC<BoardPanelProps> = (props) => {
   const _handleBoardClose = async (boardId: number) => {
     const client = new ApiClient()
 
-    try {
-      const resp = await client.delete(`/board/${boardId}/`, {
+    const resp = await client.delete(
+      `/board/${boardId}/`,
+      {
         headers: client.setAuthHeader(`${props.user.idToken}`),
-      })
-      if (resp.status === 204) {
-        props.setBoardsState()
-      }
-    } catch (e) {
-      props.setErrorState()
+      },
+      props.setErrorState
+    )
+
+    if (resp?.status === 204) {
+      props.setBoardsState()
     }
   }
 

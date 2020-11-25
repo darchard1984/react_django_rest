@@ -54,26 +54,23 @@ class Home extends React.Component<any, HomeState> {
   async authenticate(currentUser: firebase.User) {
     const idToken = await currentUser.getIdToken()
 
-    try {
-      const resp: AxiosResponse<UserResponse> = await this.client.get(
-        '/authenticate/',
-        {
-          headers: this.client.setAuthHeader(idToken),
-        }
-      )
+    const resp: AxiosResponse<UserResponse> = await this.client.get(
+      '/authenticate/',
+      {
+        headers: this.client.setAuthHeader(idToken),
+      },
+      this.setRequestErrorState.bind(this)
+    )
 
-      if (resp.status === 200 && resp.data.firebase_uid === currentUser.uid) {
-        this.setState({
-          user: {
-            uid: currentUser.uid,
-            idToken,
-            pk: resp.data.pk,
-            boards: resp.data.boards,
-          },
-        })
-      }
-    } catch (e) {
-      this.setRequestErrorState()
+    if (resp?.status === 200 && resp?.data.firebase_uid === currentUser.uid) {
+      this.setState({
+        user: {
+          uid: currentUser.uid,
+          idToken,
+          pk: resp.data.pk,
+          boards: resp.data.boards,
+        },
+      })
     }
   }
 
@@ -88,25 +85,22 @@ class Home extends React.Component<any, HomeState> {
   }
 
   async getUser(): Promise<UserResponse | undefined> {
-    try {
-      const resp: AxiosResponse<UserResponse> = await this.client.get(
-        `/user/${this.state.user.pk}/`,
-        {
-          headers: this.client.setAuthHeader(this.state.user.idToken),
-        }
-      )
+    const resp: AxiosResponse<UserResponse> = await this.client.get(
+      `/user/${this.state.user.pk}/`,
+      {
+        headers: this.client.setAuthHeader(this.state.user.idToken),
+      },
+      this.setRequestErrorState.bind(this)
+    )
 
-      const user = resp.data
-      return user
-    } catch (e) {
-      this.setRequestErrorState()
-    }
+    const user = resp?.data
+    return user
   }
 
   async setBoardsState() {
     const user = await this.getUser()
 
-    if (!user.boards.length) {
+    if (!user?.boards.length) {
       this.setState((prev) => {
         return {
           ...prev,
@@ -122,14 +116,18 @@ class Home extends React.Component<any, HomeState> {
 
     const boardstring = user.boards.join(',')
     let userBoards: UserBoard[]
-    try {
-      const resp = await this.client.get(`/boards/?pks=${boardstring}`, {
+
+    const resp = await this.client.get(
+      `/boards/?pks=${boardstring}`,
+      {
         headers: this.client.setAuthHeader(this.state.user.idToken),
-      })
-      userBoards = resp.data
-    } catch (e) {
-      this.setRequestErrorState()
-    }
+      },
+      this.setRequestErrorState.bind(this)
+    )
+
+    if (!resp) return
+
+    userBoards = resp.data
 
     this.setState((prev) => {
       return {

@@ -23,21 +23,22 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
   ) => {
     const { boardTitle } = BoardTitleFormSchema.cast(values)
 
-    try {
-      await client.post(
-        '/board/',
-        {
-          data: { title: boardTitle, user: props.user.pk },
-        },
-        { headers: client.setAuthHeader(props.user.idToken) }
-      )
+    const resp = await client.post(
+      '/board/',
+      {
+        data: { title: boardTitle, user: props.user.pk },
+      },
+      { headers: client.setAuthHeader(props.user.idToken) },
+      () =>
+        setErrors({
+          boardTitle:
+            'Something went wrong, we could not save your board at this time.',
+        })
+    )
+
+    if (resp?.status == 201) {
       props.setBoardsState()
       resetForm()
-    } catch (e) {
-      setErrors({
-        boardTitle:
-          'Something went wrong, we could not save your board at this time.',
-      })
     }
   }
 

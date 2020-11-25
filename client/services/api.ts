@@ -34,7 +34,8 @@ class ApiClient {
 
   async get(
     path: string,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    callback?: () => void
   ): Promise<AxiosResponse | undefined> {
     try {
       const resp = await this.api.get(path, config || {})
@@ -43,14 +44,15 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      throw e
+      callback()
     }
   }
 
   async post(
     path: string,
     data: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    callback?: () => void
   ): Promise<AxiosResponse | undefined> {
     try {
       const resp = await this.api.post(path, data, config || {})
@@ -59,22 +61,22 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      throw e
+      callback()
     }
   }
 
   async delete(
     path: string,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    callback?: () => void
   ): Promise<AxiosResponse | undefined> {
     try {
       const resp = await this.api.delete(path, config || {})
-
       return resp
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      throw e
+      callback()
     }
   }
 }

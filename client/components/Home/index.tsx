@@ -182,7 +182,7 @@ class Home extends React.Component<any, HomeState> {
             </Heading>
           </Flex>
           <Flex
-            justifyContent={{ base: 'center', xl: 'flex-start' }}
+            justifyContent="flex-start"
             alignItems="flex-start"
             flexDirection="row"
             width="100%"

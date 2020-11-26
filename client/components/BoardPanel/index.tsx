@@ -4,8 +4,11 @@ import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import ApiClient from '../../services/api'
 import { BoardPanelProps } from '../BoardPanel/types'
 import BoardPanelIcon from '../BoardPanelIcon'
+import { useRouter } from 'next/router'
 
 const BoardPanel: React.FC<BoardPanelProps> = (props) => {
+  const router = useRouter()
+
   const _handleBoardClose = async (boardId: number) => {
     const client = new ApiClient()
 
@@ -23,6 +26,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
   }
 
   const _handleBoardLink = (boardId: number) => {
+    router.push(`/board/${boardId}/`)
     console.log(boardId)
   }
 

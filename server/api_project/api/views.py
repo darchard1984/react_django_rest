@@ -32,7 +32,8 @@ def _handle_get_delete_update(request, pk, serializer, model):
 
 
 def _handle_post(request, serializer):
-    serialized = serializer(data=request.data)
+    serialized = serializer(data=request.data.get('data'))
+
     if serialized.is_valid():
         serialized.save()
         return Response(serialized.data, status=status.HTTP_201_CREATED)
@@ -55,6 +56,15 @@ def get_delete_update_board(request, pk):
 @api_view(['POST'])
 def create_board(request):
     return _handle_post(request, BoardWriteSerializer)
+
+
+# BOARDS VIEWS
+@api_view(['GET'])
+def get_boards(request):
+    pk_list = request.GET.get('pks').split(',')
+    entities = Board.objects.filter(pk__in=pk_list)
+
+    return Response([BoardSerializer(entity).data for entity in entities])
 
 
 # CARD LIST VIEWS

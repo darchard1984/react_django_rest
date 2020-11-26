@@ -23,6 +23,7 @@ const myTheme = {
   colors: {
     ...theme.colors,
     lightGrey: '#e0e0e0',
+    errorRed: '#ff00002b',
   },
 }
 

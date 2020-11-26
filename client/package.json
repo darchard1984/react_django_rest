@@ -16,12 +16,14 @@
     "@emotion/styled": "^11.0.0",
     "add": "^2.0.6",
     "axios": "^0.21.0",
+    "firebase": "^8.1.1",
     "formik": "^2.2.5",
     "framer-motion": "^2.9.4",
     "next": "10.0.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "yup": "^0.30.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.7",
@@ -40,7 +42,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run lint"
+      "pre-commit": "pretty-quick --staged && yarn lint && yarn type"
     }
   }
 }

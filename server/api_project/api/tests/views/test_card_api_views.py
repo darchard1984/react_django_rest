@@ -129,10 +129,12 @@ class TestCreateCard(TestCase):
             self.create_card_endpoint,
             data=json.dumps(
                 {
-                    'title': self.card_title,
-                    'description': self.card_description,
-                    'position': self.position,
-                    'card_list': self.card_list.pk
+                    'data': {
+                        'title': self.card_title,
+                        'description': self.card_description,
+                        'position': self.position,
+                        'card_list': self.card_list.pk
+                    }
                 }
             ),
             content_type='application/json'

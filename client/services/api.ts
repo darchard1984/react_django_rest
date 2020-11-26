@@ -1,5 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
+class ApiClientError extends Error {
+  constructor(message?: string) {
+    super(message)
+    this.name = 'ApiClientError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
 class ApiClient {
   api: AxiosInstance
   constructor() {
@@ -9,32 +17,65 @@ class ApiClient {
     })
   }
 
-  _handleError(error: any): void {
-    // TODO Handle error, push to Sentry
-    console.log(error)
+  private _handleError(error: any): void {
+    if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
+      // TODO: Send to Sentry
+    } else {
+      console.log(error)
+    }
+  }
+
+  setAuthHeader(token: string) {
+    return {
+      Authorization: `Bearer ${token}`,
+    }
   }
 
   async get(
     path: string,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    callback?: () => void
   ): Promise<AxiosResponse | undefined> {
     try {
-      const resp = await this.api.get(path, config)
+      const resp = await this.api.get(path, config || {})
+
       return resp
     } catch (error) {
-      this._handleError(error)
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      callback()
     }
   }
 
   async post(
     path: string,
-    config?: AxiosRequestConfig
+    data: any,
+    config?: AxiosRequestConfig,
+    callback?: () => void
   ): Promise<AxiosResponse | undefined> {
     try {
-      const resp = await this.api.post(path, config || {})
+      const resp = await this.api.post(path, data, config || {})
+
       return resp
     } catch (error) {
-      this._handleError(error)
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      callback()
+    }
+  }
+
+  async delete(
+    path: string,
+    config?: AxiosRequestConfig,
+    callback?: () => void
+  ): Promise<AxiosResponse | undefined> {
+    try {
+      const resp = await this.api.delete(path, config || {})
+      return resp
+    } catch (error) {
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      callback()
     }
   }
 }

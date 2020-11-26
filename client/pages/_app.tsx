@@ -1,11 +1,15 @@
-import { ThemeProvider, CSSReset } from '@chakra-ui/react'
+import { CSSReset, ThemeProvider } from '@chakra-ui/react'
+
+import Layout from '../components/Layout'
 import customTheme from '../theme'
 
 function App({ Component, pageProps }) {
   return (
     <ThemeProvider theme={customTheme}>
       <CSSReset />
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </ThemeProvider>
   )
 }

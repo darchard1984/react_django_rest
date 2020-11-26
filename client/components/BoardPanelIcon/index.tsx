@@ -1,8 +1,7 @@
 import BoardPanel from '../BoardPanel'
-
-import React from 'react'
-import { IconButton } from '@chakra-ui/react'
 import { BoardPanelIconProps } from './types'
+import { IconButton } from '@chakra-ui/react'
+import React from 'react'
 
 const BoardPanelIcon: React.FC<BoardPanelIconProps> = (props) => {
   const _handleClick = () => {

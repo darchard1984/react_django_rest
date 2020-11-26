@@ -1,18 +1,19 @@
-import React from 'react'
+import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
-  Flex,
-  IconButton,
-  FormControl,
-  Textarea,
-  FormErrorMessage,
   Button,
   Divider,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  IconButton,
+  Textarea,
 } from '@chakra-ui/react'
-import { AddIcon, CloseIcon } from '@chakra-ui/icons'
-import ApiClient from '../../services/api'
-import { Formik, Field, Form } from 'formik'
-import AddBoardPanelFormSchema from './schema'
+import { Field, Form, Formik } from 'formik'
+
 import { AddBoardPanelFormProps } from './types'
+import AddBoardPanelFormSchema from './schema'
+import ApiClient from '../../services/api'
+import React from 'react'
 
 export class AddBoard extends React.Component<AddBoardPanelFormProps, any> {
   client = new ApiClient()

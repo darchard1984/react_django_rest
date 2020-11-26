@@ -1,4 +1,4 @@
-import { UserBoard, User } from '../Home/types'
+import { User, UserBoard } from '../Home/types'
 
 export type BoardPanelProps = {
   board: UserBoard

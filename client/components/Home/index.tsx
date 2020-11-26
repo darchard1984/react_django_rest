@@ -1,21 +1,22 @@
-import React from 'react'
-import BoardTitleForm from '../BoardTitleForm'
-import AddBoardPanel from '../AddBoardPanel'
-import firebase from 'firebase/app'
 import {
-  Flex,
-  Box,
-  Spinner,
   Alert,
-  AlertIcon,
   AlertDescription,
+  AlertIcon,
+  Box,
+  Flex,
   Heading,
+  Spinner,
 } from '@chakra-ui/react'
-import auth from '../../lib/firebase'
+import { HomeState, UserBoard, UserResponse } from './types'
+
+import AddBoardPanel from '../AddBoardPanel'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
-import { HomeState, UserBoard, UserResponse } from './types'
 import BoardPanel from '../BoardPanel'
+import BoardTitleForm from '../BoardTitleForm'
+import React from 'react'
+import auth from '../../lib/firebase'
+import firebase from 'firebase/app'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()

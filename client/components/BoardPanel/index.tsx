@@ -1,9 +1,10 @@
-import React from 'react'
-import { Flex, Divider } from '@chakra-ui/react'
 import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
+import { Divider, Flex } from '@chakra-ui/react'
+
 import ApiClient from '../../services/api'
-import { BoardPanelProps } from '../BoardPanel/types'
 import BoardPanelIcon from '../BoardPanelIcon'
+import { BoardPanelProps } from '../BoardPanel/types'
+import React from 'react'
 import { useRouter } from 'next/router'
 
 const BoardPanel: React.FC<BoardPanelProps> = (props) => {

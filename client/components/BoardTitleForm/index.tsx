@@ -1,18 +1,17 @@
-import React from 'react'
-import { Formik, Field, Form } from 'formik'
-
 import {
-  Flex,
-  Input,
-  FormControl,
-  FormLabel,
   Button,
+  Flex,
+  FormControl,
   FormErrorMessage,
+  FormLabel,
+  Input,
 } from '@chakra-ui/react'
+import { Field, Form, Formik } from 'formik'
 
+import ApiClient from '../../services/api'
 import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './schema'
-import ApiClient from '../../services/api'
+import React from 'react'
 
 const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
   const client = new ApiClient()

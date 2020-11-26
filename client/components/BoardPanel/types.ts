@@ -6,10 +6,3 @@ export type BoardPanelProps = {
   setBoardsState: () => void
   setErrorState: () => void
 }
-
-export type BoardIconProps = {
-  boardId: number
-  icon: any
-  ariaLabel: string
-  onIconClick: (boardId: number) => void
-}

@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { string } from 'yup'
 
 class ApiClientError extends Error {
   constructor(message?: string) {

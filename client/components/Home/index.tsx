@@ -1,5 +1,6 @@
 import React from 'react'
 import BoardTitleForm from '../BoardTitleForm'
+import AddBoardPanel from '../AddBoardPanel'
 import firebase from 'firebase/app'
 import {
   Flex,
@@ -9,15 +10,12 @@ import {
   AlertIcon,
   AlertDescription,
   Heading,
-  IconButton,
-  Divider,
 } from '@chakra-ui/react'
-import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import auth from '../../lib/firebase'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import { HomeState, UserBoard, UserResponse } from './types'
-import { BoardPanel } from '../BoardPanel'
+import BoardPanel from '../BoardPanel'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()
@@ -199,6 +197,10 @@ class Home extends React.Component<any, HomeState> {
                 setErrorState={this.setRequestErrorState.bind(this)}
               />
             ))}
+            <AddBoardPanel
+              user={this.state.user}
+              setBoardsState={this.setBoardsState.bind(this)}
+            />
           </Flex>
         </Flex>
 

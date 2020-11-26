@@ -19,8 +19,9 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
 
   const _handleSumbit = async (
     values: { boardTitle: string },
-    { setErrors, resetForm }
+    { setErrors, resetForm, setSubmitting }
   ) => {
+    setSubmitting(true)
     const { boardTitle } = BoardTitleFormSchema.cast(values)
 
     const resp = await client.post(
@@ -37,8 +38,9 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
     )
 
     if (resp?.status == 201) {
-      props.setBoardsState()
+      await props.setBoardsState()
       resetForm()
+      setSubmitting(false)
     }
   }
 
@@ -76,6 +78,8 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
                       size="sm"
                       alignSelf="flex-end"
                       colorScheme="blue"
+                      isLoading={form.isSubmitting}
+                      isDisabled={!form.values.boardTitle}
                     >
                       Add
                     </Button>

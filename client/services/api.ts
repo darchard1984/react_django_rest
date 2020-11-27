@@ -43,7 +43,7 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
     }
   }
 
@@ -60,7 +60,7 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
     }
   }
 
@@ -75,7 +75,7 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
     }
   }
 }

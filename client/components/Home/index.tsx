@@ -8,6 +8,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { HomeState, UserBoard, UserResponse } from './types'
+import authenticate, { signIn } from '../../lib/authenticate'
 
 import AddBoardPanel from '../AddBoardPanel'
 import ApiClient from '../../services/api'
@@ -20,7 +21,7 @@ import firebase from 'firebase/app'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()
-  constructor(props: any) {
+  constructor(props) {
     super(props)
     this.state = {
       user: {
@@ -40,46 +41,30 @@ class Home extends React.Component<any, HomeState> {
   }
 
   async componentDidMount() {
-    let currentUser = auth.currentUser
-    if (!currentUser) {
-      await this.signIn()
-      currentUser = auth.currentUser
-    }
+    if (!this.state.user.pk) {
+      let currentUser = await signIn(this.setRequestErrorState.bind(this))
 
-    await this.authenticate(currentUser)
-    await this.setBoardsState()
-  }
+      if (!currentUser) return
 
-  async authenticate(currentUser: firebase.User) {
-    const idToken = await currentUser.getIdToken()
-
-    const resp: AxiosResponse<UserResponse> = await this.client.get(
-      '/authenticate/',
-      {
-        headers: this.client.setAuthHeader(idToken),
-      },
-      this.setRequestErrorState.bind(this)
-    )
-
-    if (resp?.status === 200 && resp?.data.firebase_uid === currentUser.uid) {
-      this.setState({
-        user: {
-          uid: currentUser.uid,
-          idToken,
-          pk: resp.data.pk,
-          boards: resp.data.boards,
-        },
-      })
-    }
-  }
-
-  async signIn(): Promise<firebase.auth.UserCredential | undefined> {
-    try {
-      const r = await auth.signInAnonymously()
-
-      return r
-    } catch (e) {
-      this.setRequestErrorState()
+      const authenticated = await authenticate(
+        currentUser,
+        this.setRequestErrorState.bind(this)
+      )
+      if (
+        authenticated?.status === 200 &&
+        authenticated?.data.firebase_uid === currentUser.uid
+      ) {
+        const idToken = await currentUser.getIdToken()
+        this.setState({
+          user: {
+            uid: currentUser.uid,
+            idToken,
+            pk: authenticated.data.pk,
+            boards: authenticated.data.boards,
+          },
+        })
+        await this.setBoardsState()
+      }
     }
   }
 
@@ -204,6 +189,15 @@ class Home extends React.Component<any, HomeState> {
             />
           </Flex>
         </Flex>
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100vh"
+          display={!this.state.user.pk ? 'flex' : 'none'}
+        >
+          <Spinner />
+        </Flex>
 
         <Flex
           justifyContent="center"
@@ -214,7 +208,6 @@ class Home extends React.Component<any, HomeState> {
           alignItems="center"
           display={!this.state.user.boards.length ? 'flex' : 'none'}
         >
-          <Spinner display={!this.state.user.pk ? 'block' : 'none'} />
           <Box display={this.state.user.pk ? 'block' : 'none'}>
             <BoardTitleForm
               setBoardsState={this.setBoardsState.bind(this)}

@@ -78,6 +78,14 @@ def create_card_list(request):
     return _handle_post(request, CardListWriteSerializer)
 
 
+@api_view(['GET'])
+def get_card_lists(request):
+    pk_list = request.GET.get('pks').split(',')
+    entities = CardList.objects.filter(pk__in=pk_list)
+
+    return Response([CardListSerializer(entity).data for entity in entities])
+
+
 # CARD VIEWS
 @api_view(['GET', 'DELETE', 'PUT'])
 def get_delete_update_card(request, pk):

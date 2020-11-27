@@ -8,7 +8,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { HomeState, UserBoard, UserResponse } from './types'
-import authenticate, { signIn } from '../../lib/authenticate'
+import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
 import AddBoardPanel from '../AddBoardPanel'
 import ApiClient from '../../services/api'
@@ -16,8 +16,6 @@ import { AxiosResponse } from 'axios'
 import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
 import React from 'react'
-import auth from '../../lib/firebase'
-import firebase from 'firebase/app'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()
@@ -68,21 +66,12 @@ class Home extends React.Component<any, HomeState> {
     }
   }
 
-  async getUser(): Promise<UserResponse | undefined> {
-    const resp: AxiosResponse<UserResponse> = await this.client.get(
-      `/user/${this.state.user.pk}/`,
-      {
-        headers: this.client.setAuthHeader(this.state.user.idToken),
-      },
+  async setBoardsState() {
+    const user = await getUser(
+      this.state.user.pk,
+      this.state.user.idToken,
       this.setRequestErrorState.bind(this)
     )
-
-    const user = resp?.data
-    return user
-  }
-
-  async setBoardsState() {
-    const user = await this.getUser()
 
     if (!user?.boards.length) {
       this.setState((prev) => {
@@ -146,7 +135,6 @@ class Home extends React.Component<any, HomeState> {
           position="absolute"
           width="100%"
           flexWrap="wrap"
-          id="outer"
         >
           <Alert status="error" maxWidth="500px">
             <AlertIcon />
@@ -158,15 +146,19 @@ class Home extends React.Component<any, HomeState> {
 
         <Flex
           flexDirection="column"
-          width={{ base: '100%', xl: '1440px' }}
-          margin="0 auto"
           display={this.state.userBoards.length ? 'flex' : 'none'}
         >
-          <Flex borderBottom="1px solid #c5c1c1c9">
-            <Heading as="h1" fontSize="lg" mt="8" ml="4" mb="4">
-              Your boards
-            </Heading>
-          </Flex>
+          <Heading
+            as="h1"
+            fontSize="lg"
+            mt="8"
+            ml="4"
+            mb="4"
+            borderBottom="1px solid lightGrey"
+          >
+            Your boards
+          </Heading>
+
           <Flex
             justifyContent="flex-start"
             alignItems="flex-start"

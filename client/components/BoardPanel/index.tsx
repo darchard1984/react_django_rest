@@ -1,5 +1,5 @@
 import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
-import { Divider, Flex } from '@chakra-ui/react'
+import { Divider, Flex, Text } from '@chakra-ui/react'
 
 import ApiClient from '../../services/api'
 import BoardPanelIcon from '../BoardPanelIcon'
@@ -28,24 +28,23 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
 
   const _handleBoardLink = (boardId: number) => {
     router.push(`/board/${boardId}/`)
-    console.log(boardId)
   }
 
   return (
     <Flex
-      backgroundColor="#fff"
       mt="8"
       ml="4"
       mr="4"
       mb="4"
       width="200px"
-      minHeight="150px"
       justifyContent="flex-start"
       alignItems="flex-start"
       flexDirection="column"
       boxShadow="-1px 5px 61px 5px #00000021"
       borderRadius=".3rem"
       padding="4"
+      wordBreak="break-word"
+      background="boardBackground"
     >
       <Flex justifyContent="flex-end" width="100%">
         <BoardPanelIcon
@@ -61,8 +60,10 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
           boardId={props.board.pk}
         />
       </Flex>
-      <Divider mt="2" mb="2" />
-      {props.board.title}
+      <Divider mt="2" mb="2" color="#fff" />
+      <Text as="span" color="#fff">
+        {props.board.title}
+      </Text>
     </Flex>
   )
 }

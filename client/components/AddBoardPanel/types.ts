@@ -1,6 +1,6 @@
 import { User } from '../Home/types'
 
-export type AddBoardPanelFormProps = {
+export type AddBoardPanelProps = {
   user: User
   setBoardsState: () => Promise<void>
 }

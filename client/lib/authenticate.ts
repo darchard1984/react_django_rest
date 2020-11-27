@@ -32,3 +32,20 @@ export async function signIn(
     if (callback) callback()
   }
 }
+
+export async function getUser(
+  userId: number,
+  idToken: string,
+  callback?: () => void
+): Promise<UserResponse | undefined> {
+  const resp: AxiosResponse<UserResponse> = await client.get(
+    `/user/${userId}/`,
+    {
+      headers: client.setAuthHeader(idToken),
+    },
+    callback
+  )
+
+  const user = resp?.data
+  return user
+}

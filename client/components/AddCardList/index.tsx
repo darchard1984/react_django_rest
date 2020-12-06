@@ -73,12 +73,12 @@ export class AddList extends React.Component<AddListProps, AddListState> {
         alignItems="center"
         justifyContent="center"
         ml="4"
-        mt="8"
+        mt="2"
         mr="4"
         minWidth="200px"
       >
         <Flex
-          minHeight="50px"
+          height="40px"
           border="1px solid lightGrey"
           width="100%"
           justifyContent="space-between"
@@ -90,7 +90,7 @@ export class AddList extends React.Component<AddListProps, AddListState> {
           background="lighterGrey"
         >
           <Text as="span" mr="4">
-            Add a new list
+            Add a list
           </Text>
           <IconButton
             aria-label="add a new list"
@@ -125,7 +125,7 @@ export class AddList extends React.Component<AddListProps, AddListState> {
                         boxShadow="-1px 5px 61px 5px #00000021"
                         borderRadius=".3rem"
                         padding="4"
-                        width="250px"
+                        width="200px"
                       >
                         <Input
                           {...field}

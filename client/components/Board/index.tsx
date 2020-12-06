@@ -9,14 +9,16 @@ import {
 } from '@chakra-ui/react'
 import authenticate, { signIn } from '../../lib/authenticate'
 
-import AddCardList from '../../components/AddCardList'
+import { AddCard } from '../AddCard'
+import AddCardList from '../AddCardList'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import { BoardProps } from './types'
-import { CardList } from '../../components/AddCardList/types'
-import CardListPanel from '../../components/CardListPanel/'
+import { CardList } from '../AddCardList/types'
+import CardListTitle from '../CardListTitle'
+import Cards from '../Cards'
 import React from 'react'
-import { UserBoard } from '../../components/Home/types'
+import { UserBoard } from '../Home/types'
 import { withRouter } from 'next/router'
 
 class Board extends React.Component<BoardProps, any> {
@@ -88,18 +90,27 @@ class Board extends React.Component<BoardProps, any> {
     idToken: string,
     boardId: string
   ): Promise<AxiosResponse<UserBoard> | undefined> {
-    const resp = await this.client.get(`/board/${boardId}`, {
-      headers: this.client.setAuthHeader(idToken),
-    })
+    const resp: AxiosResponse<UserBoard> | undefined = await this.client.get(
+      `/board/${boardId}`,
+      {
+        headers: this.client.setAuthHeader(idToken),
+      }
+    )
 
     return resp
   }
 
-  async getCardLists(cardLists: number[], idToken: string) {
-    const lists = cardLists.join(',')
-    const resp = await this.client.get(`/card-lists/?pks=${lists}`, {
-      headers: this.client.setAuthHeader(idToken),
-    })
+  async getCardLists(
+    cardListIds: number[],
+    idToken: string
+  ): Promise<AxiosResponse<CardList[]> | undefined> {
+    const lists = cardListIds.join(',')
+    const resp: AxiosResponse<CardList[]> | undefined = await this.client.get(
+      `/card-lists/?pks=${lists}`,
+      {
+        headers: this.client.setAuthHeader(idToken),
+      }
+    )
 
     return resp
   }
@@ -109,7 +120,7 @@ class Board extends React.Component<BoardProps, any> {
       this.state.user.idToken,
       this.state.boardId
     )
-    const cardLists: AxiosResponse<CardList[]> = await this.getCardLists(
+    const cardLists = await this.getCardLists(
       board.data.card_lists,
       this.state.user.idToken
     )
@@ -156,15 +167,9 @@ class Board extends React.Component<BoardProps, any> {
             </AlertDescription>
           </Alert>
         </Flex>
-        <Flex
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
-          width="100%"
-          display={!this.state.user.pk ? 'flex' : 'none'}
-        >
-          <Spinner />
-        </Flex>
+        <Box position="relative" left="50%" top="calc(50vh - 60px)">
+          <Spinner display={!this.state.user.pk ? 'flex' : 'none'} />
+        </Box>
 
         <Flex
           flexDirection="column"
@@ -195,7 +200,31 @@ class Board extends React.Component<BoardProps, any> {
               float="left"
             >
               {this.state.cardLists.map((cardList) => (
-                <CardListPanel cardListTitle={cardList.title} />
+                <Flex
+                  width="225px"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="flex-start"
+                  background="lightGrey"
+                  margin="2"
+                  borderRadius=".3rem"
+                  padding="2"
+                  key={cardList.pk}
+                >
+                  <CardListTitle cardListTitle={cardList.title} />
+                  {cardList.cards.length ? (
+                    <Cards
+                      cardIds={cardList.cards}
+                      idToken={this.state.user.idToken}
+                    />
+                  ) : (
+                    []
+                  )}
+                  <AddCard
+                    cardListId={cardList.pk}
+                    idToken={this.state.user.idToken}
+                  />
+                </Flex>
               ))}
               <AddCardList
                 boardId={this.state.boardId}

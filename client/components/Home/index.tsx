@@ -10,7 +10,7 @@ import {
 import { HomeState, UserBoard, UserResponse } from './types'
 import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
-import AddBoardPanel from '../AddBoardPanel'
+import AddBoardPanel from '../AddBoard'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import BoardPanel from '../BoardPanel'

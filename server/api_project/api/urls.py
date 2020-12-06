@@ -28,4 +28,5 @@ urlpatterns = [
         name='get_delete_update_card'
     ),
     path('api/v1/card/', views.create_card, name='create_card'),
+    path('api/v1/cards/', views.get_cards, name='get_cards'),
 ]

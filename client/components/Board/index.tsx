@@ -65,8 +65,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       )
 
       if (
-        authenticated?.status === 200 &&
-        authenticated?.data.firebase_uid === currentUser.uid
+        authenticated.status === 200 &&
+        authenticated.data.firebase_uid === currentUser.uid
       ) {
         const idToken = await currentUser.getIdToken()
         const boardId = this.props.router.query.boardId as string
@@ -85,8 +85,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
               pk: authenticated.data.pk,
               boards: authenticated.data.boards,
             },
-            board: board?.data,
-            cardLists: cardLists?.data,
+            board: board.data,
+            cardLists: cardLists.data,
           },
           () => console.log(this.state)
         )
@@ -97,8 +97,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
   async getBoard(
     idToken: string,
     boardId: string
-  ): Promise<AxiosResponse<Board> | undefined> {
-    const resp: AxiosResponse<Board> | undefined = await this.client.get(
+  ): Promise<AxiosResponse<Board>> {
+    const resp: AxiosResponse<Board> = await this.client.get(
       `/board/${boardId}`,
       {
         headers: this.client.setAuthHeader(idToken),
@@ -111,9 +111,9 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
   async getCardLists(
     cardListIds: number[],
     idToken: string
-  ): Promise<AxiosResponse<CardList[]> | undefined> {
+  ): Promise<AxiosResponse<CardList[]>> {
     const lists = cardListIds.join(',')
-    const resp: AxiosResponse<CardList[]> | undefined = await this.client.get(
+    const resp: AxiosResponse<CardList[]> = await this.client.get(
       `/card-lists/?pks=${lists}`,
       {
         headers: this.client.setAuthHeader(idToken),
@@ -138,7 +138,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         ...this.state.board,
         card_lists: cardLists.data.map((cardList) => cardList.pk),
       },
-      cardLists: cardLists?.data || [],
+      cardLists: cardLists.data || [],
     })
   }
 

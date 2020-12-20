@@ -21,7 +21,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       props.setErrorState
     )
 
-    if (resp?.status === 204) {
+    if (resp.status === 204) {
       props.setBoardsState()
     }
   }

@@ -35,7 +35,7 @@ class ApiClient {
     path: string,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.get(path, config || {})
 
@@ -52,7 +52,7 @@ class ApiClient {
     data: any,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.post(path, data, config || {})
 
@@ -68,7 +68,7 @@ class ApiClient {
     path: string,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.delete(path, config || {})
       return resp

@@ -57,7 +57,7 @@ export class AddBoard extends React.Component<
         })
     )
 
-    if (resp?.status == 201) {
+    if (resp.status == 201) {
       await this.props.setBoardsState()
       resetForm()
       setSubmitting(false)

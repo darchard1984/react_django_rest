@@ -22,9 +22,7 @@ export default async function authenticate(
   return resp
 }
 
-export async function signIn(
-  callback?: () => void
-): Promise<firebase.User | undefined> {
+export async function signIn(callback?: () => void): Promise<firebase.User> {
   try {
     await auth.signInAnonymously()
     return auth.currentUser
@@ -37,7 +35,7 @@ export async function getUser(
   userId: number,
   idToken: string,
   callback?: () => void
-): Promise<UserResponse | undefined> {
+): Promise<UserResponse> {
   const resp: AxiosResponse<UserResponse> = await client.get(
     `/user/${userId}/`,
     {

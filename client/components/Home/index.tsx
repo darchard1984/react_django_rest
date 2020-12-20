@@ -50,8 +50,8 @@ class Home extends React.Component<any, HomeState> {
         this.setRequestErrorState.bind(this)
       )
       if (
-        authenticated?.status === 200 &&
-        authenticated?.data.firebase_uid === currentUser.uid
+        authenticated.status === 200 &&
+        authenticated.data.firebase_uid === currentUser.uid
       ) {
         const idToken = await currentUser.getIdToken()
         this.setState({
@@ -74,7 +74,7 @@ class Home extends React.Component<any, HomeState> {
       this.setRequestErrorState.bind(this)
     )
 
-    if (!user?.boards.length) {
+    if (!user.boards.length) {
       this.setState((prev) => {
         return {
           ...prev,
@@ -98,8 +98,6 @@ class Home extends React.Component<any, HomeState> {
       },
       this.setRequestErrorState.bind(this)
     )
-
-    if (!resp) return
 
     boards = resp.data
 

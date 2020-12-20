@@ -22,12 +22,9 @@ export class Cards extends React.Component<CardsProps, CardsState> {
       this.props.cardList.cards,
       this.props.idToken
     )
-    this.setState(
-      {
-        cards: cards.data,
-      },
-      () => console.log(this.state)
-    )
+    this.setState({
+      cards: cards.data,
+    })
   }
 
   async getCards(
@@ -77,6 +74,7 @@ export class Cards extends React.Component<CardsProps, CardsState> {
             padding="4"
             wordBreak="break-word"
             background="boardBackground"
+            key={card.pk}
           >
             <Text fontWeight="bold">{card.title}</Text>
             <Divider mt="2" mb="4" />

@@ -77,19 +77,16 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           idToken
         )
 
-        this.setState(
-          {
-            user: {
-              uid: currentUser.uid,
-              idToken,
-              pk: authenticated.data.pk,
-              boards: authenticated.data.boards,
-            },
-            board: board.data,
-            cardLists: cardLists.data,
+        this.setState({
+          user: {
+            uid: currentUser.uid,
+            idToken,
+            pk: authenticated.data.pk,
+            boards: authenticated.data.boards,
           },
-          () => console.log(this.state)
-        )
+          board: board.data,
+          cardLists: cardLists.data,
+        })
       }
     }
   }
@@ -211,6 +208,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                 <CardListPanel
                   cardList={cardList}
                   idToken={this.state.user.idToken}
+                  key={cardList.pk}
                 />
               ))}
               <AddCardList

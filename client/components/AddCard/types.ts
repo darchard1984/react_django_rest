@@ -1,6 +1,7 @@
 export type AddCardProps = {
   cardListId: number
   idToken: string
+  setCardState: (cardListId: number) => void
 }
 
 export type AddCardState = {

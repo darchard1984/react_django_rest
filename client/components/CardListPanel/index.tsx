@@ -1,6 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react'
 
-import AddCard from '../AddCard'
 import { CardListPanelProps } from './types'
 import Cards from '../Cards'
 import React from 'react'
@@ -32,11 +31,10 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         </Text>
       </Flex>
       {props.cardList.cards.length ? (
-        <Cards cardIds={props.cardList.cards} idToken={props.idToken} />
+        <Cards cardList={props.cardList} idToken={props.idToken} />
       ) : (
         []
       )}
-      <AddCard cardListId={props.cardList.pk} idToken={props.idToken} />
     </Flex>
   )
 }

@@ -178,6 +178,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         <Box position="relative" left="50%" top="calc(50vh - 60px)">
           <Spinner display={!this.state.user.pk ? 'flex' : 'none'} />
         </Box>
+
         <Flex
           flexDirection="column"
           width="100%"

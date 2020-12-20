@@ -1,9 +1,11 @@
 import { CardsProps, CardsState } from './types'
 import { Divider, Flex, Text } from '@chakra-ui/react'
 
+import AddCard from '../AddCard'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import { Card } from '../AddCard/types'
+import { CardList } from '../AddCardList/types'
 import React from 'react'
 
 export class Cards extends React.Component<CardsProps, CardsState> {
@@ -16,10 +18,13 @@ export class Cards extends React.Component<CardsProps, CardsState> {
   }
 
   async componentDidMount() {
-    const cards = await this.getCards(this.props.cardIds, this.props.idToken)
+    const cards = await this.getCards(
+      this.props.cardList.cards,
+      this.props.idToken
+    )
     this.setState(
       {
-        cards: cards?.data,
+        cards: cards.data,
       },
       () => console.log(this.state)
     )
@@ -28,9 +33,9 @@ export class Cards extends React.Component<CardsProps, CardsState> {
   async getCards(
     cardIds: number[],
     idToken: string
-  ): Promise<AxiosResponse<Card[]> | undefined> {
+  ): Promise<AxiosResponse<Card[]>> {
     const ids = cardIds.join(',')
-    const resp: AxiosResponse<Card[]> | undefined = await this.client.get(
+    const resp: AxiosResponse<Card[]> = await this.client.get(
       `/cards/?pks=${ids}`,
       {
         headers: this.client.setAuthHeader(idToken),
@@ -39,6 +44,24 @@ export class Cards extends React.Component<CardsProps, CardsState> {
 
     return resp
   }
+
+  async getCardList(cardListId: number): Promise<AxiosResponse<CardList>> {
+    const resp: AxiosResponse<CardList> = await this.client.get(
+      `/card-list/${cardListId}/`,
+      { headers: this.client.setAuthHeader(this.props.idToken) }
+    )
+
+    return resp
+  }
+
+  setCardState = async (cardListId: number) => {
+    const cardList = await this.getCardList(cardListId)
+    const cards = await this.getCards(cardList.data.cards, this.props.idToken)
+    this.setState({
+      cards: cards.data,
+    })
+  }
+
   render() {
     return (
       <Flex flexDirection="column">
@@ -60,6 +83,11 @@ export class Cards extends React.Component<CardsProps, CardsState> {
             <Text fontSize="xs">{card.description}</Text>
           </Flex>
         ))}
+        <AddCard
+          cardListId={this.props.cardList.pk}
+          idToken={this.props.idToken}
+          setCardState={this.setCardState}
+        />
       </Flex>
     )
   }

@@ -1,4 +1,5 @@
 import { Card } from '../AddCard/types'
+import { CardList } from '../AddCardList/types'
 
 export type CardsState = {
   cards: Card[]
@@ -6,5 +7,5 @@ export type CardsState = {
 
 export type CardsProps = {
   idToken: string
-  cardIds: number[]
+  cardList: CardList
 }

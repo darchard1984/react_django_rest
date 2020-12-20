@@ -83,7 +83,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
         minWidth="200px"
       >
         <Flex
-          height="40px"
+          height="30px"
           width="100%"
           justifyContent="space-between"
           alignItems="center"
@@ -93,7 +93,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
           pr="4"
           background="lighterGrey"
         >
-          <Text as="span" mr="4">
+          <Text as="span" mr="4" fontSize="xs">
             Add a card
           </Text>
           <IconButton

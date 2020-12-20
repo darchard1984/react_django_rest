@@ -1,3 +1,6 @@
+import { CardList } from '../AddCardList/types'
+
 export type CardListPanelProps = {
-  cardListTitle: string
+  cardList: CardList
+  idToken: string
 }

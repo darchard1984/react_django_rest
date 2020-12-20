@@ -57,7 +57,7 @@ export class Cards extends React.Component<CardsProps, CardsState> {
           >
             <Text fontWeight="bold">{card.title}</Text>
             <Divider mt="2" mb="4" />
-            <Text>{card.description}</Text>
+            <Text fontSize="xs">{card.description}</Text>
           </Flex>
         ))}
       </Flex>

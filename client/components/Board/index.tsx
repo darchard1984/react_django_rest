@@ -16,7 +16,7 @@ import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import { CardList } from '../AddCardList/types'
-import CardListTitle from '../CardListPanel'
+import CardListPanel from '../CardListPanel'
 import Cards from '../Cards'
 import React from 'react'
 import { withRouter } from 'next/router'
@@ -178,7 +178,6 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         <Box position="relative" left="50%" top="calc(50vh - 60px)">
           <Spinner display={!this.state.user.pk ? 'flex' : 'none'} />
         </Box>
-
         <Flex
           flexDirection="column"
           width="100%"
@@ -208,31 +207,10 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
               float="left"
             >
               {this.state.cardLists.map((cardList) => (
-                <Flex
-                  width="225px"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="flex-start"
-                  background="lightGrey"
-                  margin="2"
-                  borderRadius=".3rem"
-                  padding="2"
-                  key={cardList.pk}
-                >
-                  <CardListTitle cardListTitle={cardList.title} />
-                  {cardList.cards.length ? (
-                    <Cards
-                      cardIds={cardList.cards}
-                      idToken={this.state.user.idToken}
-                    />
-                  ) : (
-                    []
-                  )}
-                  <AddCard
-                    cardListId={cardList.pk}
-                    idToken={this.state.user.idToken}
-                  />
-                </Flex>
+                <CardListPanel
+                  cardList={cardList}
+                  idToken={this.state.user.idToken}
+                />
               ))}
               <AddCardList
                 boardId={this.state.board.pk}

@@ -1,3 +1,4 @@
+import { AddBoardPanelProps, AddBoardState, Board } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -10,12 +11,15 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import { AddBoardPanelProps } from './types'
 import AddBoardPanelSchema from './schema'
 import ApiClient from '../../services/api'
+import { AxiosResponse } from 'axios'
 import React from 'react'
 
-export class AddBoard extends React.Component<AddBoardPanelProps, any> {
+export class AddBoard extends React.Component<
+  AddBoardPanelProps,
+  AddBoardState
+> {
   client = new ApiClient()
   constructor(props) {
     super(props)
@@ -41,7 +45,7 @@ export class AddBoard extends React.Component<AddBoardPanelProps, any> {
     setSubmitting(true)
     const { boardTitle } = AddBoardPanelSchema.cast({ ...values })
 
-    const resp = await this.client.post(
+    const resp: AxiosResponse<Board> = await this.client.post(
       '/board/',
       {
         data: { title: boardTitle, user: this.props.user.pk },

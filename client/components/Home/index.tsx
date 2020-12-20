@@ -7,12 +7,13 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react'
-import { HomeState, UserBoard, UserResponse } from './types'
+import { HomeState, UserResponse } from './types'
 import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
 import AddBoardPanel from '../AddBoard'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
+import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
 import React from 'react'
@@ -28,7 +29,7 @@ class Home extends React.Component<any, HomeState> {
         pk: null,
         boards: [],
       },
-      userBoards: [],
+      boards: [],
       errors: {
         requestError: {
           status: false,
@@ -81,14 +82,14 @@ class Home extends React.Component<any, HomeState> {
             ...prev.user,
             boards: [],
           },
-          userBoards: [],
+          boards: [],
         }
       })
       return
     }
 
     const boardstring = user.boards.join(',')
-    let userBoards: UserBoard[]
+    let boards: Board[]
 
     const resp = await this.client.get(
       `/boards/?pks=${boardstring}`,
@@ -100,16 +101,16 @@ class Home extends React.Component<any, HomeState> {
 
     if (!resp) return
 
-    userBoards = resp.data
+    boards = resp.data
 
     this.setState((prev) => {
       return {
         ...prev,
         user: {
           ...prev.user,
-          boards: userBoards.map((board) => board.pk),
+          boards: boards.map((board) => board.pk),
         },
-        userBoards,
+        boards,
       }
     })
   }
@@ -146,7 +147,7 @@ class Home extends React.Component<any, HomeState> {
 
         <Flex
           flexDirection="column"
-          display={this.state.userBoards.length ? 'flex' : 'none'}
+          display={this.state.boards.length ? 'flex' : 'none'}
         >
           <Heading
             as="h1"
@@ -166,7 +167,7 @@ class Home extends React.Component<any, HomeState> {
             width="100%"
             flexWrap="wrap"
           >
-            {this.state.userBoards.map((board) => (
+            {this.state.boards.map((board) => (
               <BoardPanel
                 key={board.pk}
                 board={board}

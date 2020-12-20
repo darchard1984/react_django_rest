@@ -1,12 +1,4 @@
-export type Card = {
-  card_list: number
-  title: string
-  description: string
-  position: number
-  created_at: string
-  updated_at: string
-  pk: number
-}
+import { Card } from '../AddCard/types'
 
 export type CardsState = {
   cards: Card[]

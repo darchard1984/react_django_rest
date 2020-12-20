@@ -1,8 +1,9 @@
-import { Card, CardsProps, CardsState } from './types'
+import { CardsProps, CardsState } from './types'
 import { Divider, Flex, Text } from '@chakra-ui/react'
 
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
+import { Card } from '../AddCard/types'
 import React from 'react'
 
 export class Cards extends React.Component<CardsProps, CardsState> {

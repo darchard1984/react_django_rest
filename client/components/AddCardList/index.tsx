@@ -1,5 +1,5 @@
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
-import { AddListProps, AddListState } from './types'
+import { AddListProps, AddListState, CardList } from './types'
 import {
   Button,
   Divider,
@@ -14,6 +14,7 @@ import { Field, Form, Formik } from 'formik'
 
 import AddListSchema from './schema'
 import ApiClient from '../../services/api'
+import { AxiosResponse } from 'axios'
 import React from 'react'
 
 export class AddList extends React.Component<AddListProps, AddListState> {
@@ -44,7 +45,7 @@ export class AddList extends React.Component<AddListProps, AddListState> {
     setSubmitting(true)
     const { listTitle } = AddListSchema.cast({ ...values })
 
-    const resp = await this.client.post(
+    const resp: AxiosResponse<CardList> = await this.client.post(
       '/card-list/',
       {
         data: { title: listTitle, board: this.props.boardId },

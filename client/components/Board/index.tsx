@@ -7,21 +7,21 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react'
+import { BoardProps, BoardState } from './types'
 import authenticate, { signIn } from '../../lib/authenticate'
 
 import { AddCard } from '../AddCard'
 import AddCardList from '../AddCardList'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
-import { BoardProps } from './types'
+import { Board } from '../AddBoard/types'
 import { CardList } from '../AddCardList/types'
-import CardListTitle from '../CardListTitle'
+import CardListTitle from '../CardListPanel'
 import Cards from '../Cards'
 import React from 'react'
-import { UserBoard } from '../Home/types'
 import { withRouter } from 'next/router'
 
-class Board extends React.Component<BoardProps, any> {
+class BoardComponent extends React.Component<BoardProps, BoardState> {
   client = new ApiClient()
   constructor(props: BoardProps) {
     super(props)
@@ -32,8 +32,14 @@ class Board extends React.Component<BoardProps, any> {
         pk: null,
         boards: [],
       },
-      boardId: null,
-      board: {},
+      board: {
+        card_lists: [],
+        created_at: '',
+        updated_at: '',
+        pk: null,
+        user: null,
+        title: '',
+      },
       cardLists: [],
       errors: {
         requestError: {
@@ -71,17 +77,19 @@ class Board extends React.Component<BoardProps, any> {
           idToken
         )
 
-        this.setState({
-          user: {
-            uid: currentUser.uid,
-            idToken,
-            pk: authenticated.data.pk,
-            boards: authenticated.data.boards,
+        this.setState(
+          {
+            user: {
+              uid: currentUser.uid,
+              idToken,
+              pk: authenticated.data.pk,
+              boards: authenticated.data.boards,
+            },
+            board: board?.data,
+            cardLists: cardLists?.data,
           },
-          boardId: this.props.router.query.boardId,
-          board: board?.data || {},
-          cardLists: cardLists?.data || [],
-        })
+          () => console.log(this.state)
+        )
       }
     }
   }
@@ -89,8 +97,8 @@ class Board extends React.Component<BoardProps, any> {
   async getBoard(
     idToken: string,
     boardId: string
-  ): Promise<AxiosResponse<UserBoard> | undefined> {
-    const resp: AxiosResponse<UserBoard> | undefined = await this.client.get(
+  ): Promise<AxiosResponse<Board> | undefined> {
+    const resp: AxiosResponse<Board> | undefined = await this.client.get(
       `/board/${boardId}`,
       {
         headers: this.client.setAuthHeader(idToken),
@@ -118,7 +126,7 @@ class Board extends React.Component<BoardProps, any> {
   async setCardListState() {
     const board = await this.getBoard(
       this.state.user.idToken,
-      this.state.boardId
+      this.state.board.pk.toString()
     )
     const cardLists = await this.getCardLists(
       board.data.card_lists,
@@ -174,7 +182,7 @@ class Board extends React.Component<BoardProps, any> {
         <Flex
           flexDirection="column"
           width="100%"
-          display={this.state.boardId ? 'flex' : 'none'}
+          display={Object.keys(this.state.board).length ? 'flex' : 'none'}
         >
           <Heading
             as="h1"
@@ -227,7 +235,7 @@ class Board extends React.Component<BoardProps, any> {
                 </Flex>
               ))}
               <AddCardList
-                boardId={this.state.boardId}
+                boardId={this.state.board.pk}
                 idToken={this.state.user.idToken}
                 setCardListState={this.setCardListState.bind(this)}
               />
@@ -239,4 +247,4 @@ class Board extends React.Component<BoardProps, any> {
   }
 }
 
-export default withRouter(Board)
+export default withRouter(BoardComponent)

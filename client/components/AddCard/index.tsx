@@ -1,4 +1,4 @@
-import { AddCardProps, AddCardState } from './types'
+import { AddCardProps, AddCardState, Card } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -15,6 +15,7 @@ import { Field, Form, Formik } from 'formik'
 
 import AddCardSchema from './schema'
 import ApiClient from '../../services/api'
+import { AxiosResponse } from 'axios'
 import React from 'react'
 
 export class AddCard extends React.Component<AddCardProps, AddCardState> {
@@ -45,7 +46,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
     setSubmitting(true)
     const { cardTitle, cardDescription } = AddCardSchema.cast({ ...values })
 
-    const resp = await this.client.post(
+    const resp: AxiosResponse<Card> = await this.client.post(
       '/card/',
       {
         data: {

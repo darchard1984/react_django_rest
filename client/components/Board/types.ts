@@ -13,7 +13,7 @@ export type BoardState = {
   board: Board
   user: User
   showSpinner: boolean
-  cards: Card[]
+  cards: Card[][]
   errors: {
     requestError: {
       status: boolean

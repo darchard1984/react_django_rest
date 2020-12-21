@@ -17,7 +17,7 @@ import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
-import Cards from '../Cards'
+import { Console } from 'console'
 import React from 'react'
 import { array } from 'yup'
 import { withRouter } from 'next/router'
@@ -81,7 +81,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         )
 
         const allCards = []
-        for (let i = 0; i < cardLists.data.length; i++) {
+        for (let i = 0; i < cardLists?.data.length; i++) {
           if (cardLists.data[i].cards.length) {
             const cards = await this.getCards(cardLists.data[i].cards, idToken)
             allCards.push(cards.data)
@@ -97,7 +97,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           },
           showSpinner: false,
           board: board.data,
-          cardLists: cardLists.data,
+          cardLists: cardLists?.data || [],
           cards: allCards,
         })
       }
@@ -133,6 +133,15 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     return resp
   }
 
+  async getCardList(cardListId: number): Promise<AxiosResponse<CardList>> {
+    const resp: AxiosResponse<CardList> = await this.client.get(
+      `/card-list/${cardListId}/`,
+      { headers: this.client.setAuthHeader(this.state.user.idToken) }
+    )
+
+    return resp
+  }
+
   async getCards(
     cardIds: number[],
     idToken: string
@@ -148,7 +157,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     return resp
   }
 
-  async setCardListState() {
+  async setCardListsState() {
     const board = await this.getBoard(
       this.state.user.idToken,
       this.state.board.pk.toString()
@@ -167,6 +176,39 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     })
   }
 
+  async setCardListState(cardListId: number) {
+    const cardList = await this.getCardList(cardListId)
+    const listCards = await this.getCards(
+      cardList.data.cards,
+      this.state.user.idToken
+    )
+
+    const allCardsCopy = [...this.state.cards]
+    const allCardsIndex = allCardsCopy.findIndex(
+      (card) => listCards.data[0].card_list === card[0].card_list
+    )
+
+    allCardsCopy.splice(allCardsIndex, 1)
+    allCardsCopy.splice(allCardsIndex, 0, listCards.data)
+
+    const allCardListsCopy = [...this.state.cardLists]
+    const allCardListsIndex = allCardListsCopy.findIndex(
+      (allCardList) => allCardList.pk === cardList.data.pk
+    )
+
+    allCardListsCopy.splice(allCardListsIndex, 1)
+    allCardListsCopy.splice(allCardListsIndex, 0, cardList.data)
+
+    this.setState({
+      cards: allCardsCopy,
+      cardLists: allCardListsCopy,
+    })
+  }
+
+  async onDragEnd(results) {
+    console.log(results)
+  }
+
   private setRequestErrorState() {
     this.setState({
       errors: {
@@ -179,19 +221,18 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
   }
 
   private filterCards(cardListId: number): Card[] {
-    const cards = (this.state.cards.filter(
-      (card: Card) => card[0].card_list === cardListId
-    ) as unknown) as Card[][]
-
+    const cards = (this.state.cards.filter((card: Card[]) => {
+      return card[0].card_list === cardListId
+    }) as unknown) as Card[][]
     if (!cards.length) {
       return []
     }
 
-    return cards[0]
+    return this.sortCardsByPosition(cards[0])
   }
 
-  getBoardIdFromPath() {
-    return this.props.router.query.boardId
+  private sortCardsByPosition(cards: Card[]) {
+    return cards.sort((a, b) => a.position - b.position)
   }
 
   render() {
@@ -249,13 +290,15 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                   cardList={cardList}
                   cards={this.filterCards(cardList.pk)}
                   idToken={this.state.user.idToken}
+                  setCardListState={this.setCardListState.bind(this)}
+                  onDragEnd={this.onDragEnd.bind(this)}
                   key={cardList.pk}
                 />
               ))}
               <AddCardList
                 boardId={this.state.board.pk}
                 idToken={this.state.user.idToken}
-                setCardListState={this.setCardListState.bind(this)}
+                setCardListsState={this.setCardListsState.bind(this)}
               />
             </Flex>
           </Box>

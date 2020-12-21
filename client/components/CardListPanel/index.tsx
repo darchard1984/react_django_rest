@@ -1,10 +1,21 @@
+import { CardListPanelProps, CardListPanelState } from './types'
 import { Flex, Text } from '@chakra-ui/react'
 
-import { CardListPanelProps } from './types'
-import Cards from '../Cards'
+import AddCard from '../AddCard'
+import { Card } from '../AddCard/types'
+import CardComponent from '../Card'
+import { DragDropContext } from 'react-beautiful-dnd'
+import { Droppable } from 'react-beautiful-dnd'
 import React from 'react'
 
 const CardListPanel: React.FC<CardListPanelProps> = (props) => {
+  function _renderCards() {
+    const cards = props.cards as Card[]
+    return cards.map((card, index) => (
+      <CardComponent card={card} key={card.pk} index={index} />
+    ))
+  }
+
   return (
     <Flex
       width="225px"
@@ -15,7 +26,6 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
       margin="2"
       borderRadius=".3rem"
       padding="2"
-      key={props.cardList.pk}
     >
       <Flex
         width="200px"
@@ -31,11 +41,26 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         </Text>
       </Flex>
 
-      <Cards
-        cardList={props.cardList}
-        idToken={props.idToken}
-        cards={props.cards}
-      />
+      <DragDropContext onDragEnd={props.onDragEnd}>
+        <Droppable droppableId={props.cardList.pk.toString()}>
+          {(provided) => (
+            <Flex
+              flexDirection="column"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {_renderCards()}
+              {provided.placeholder}
+              <AddCard
+                cardListId={props.cardList.pk}
+                idToken={props.idToken}
+                setCardListState={props.setCardListState}
+                nextPosition={props.cards.length}
+              />
+            </Flex>
+          )}
+        </Droppable>
+      </DragDropContext>
     </Flex>
   )
 }

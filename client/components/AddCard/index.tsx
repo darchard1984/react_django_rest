@@ -52,7 +52,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
         data: {
           title: cardTitle,
           description: cardDescription,
-          position: 1,
+          position: this.props.nextPosition,
           card_list: this.props.cardListId,
         },
       },
@@ -64,7 +64,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
     )
 
     if (resp.status == 201) {
-      await this.props.setCardState(this.props.cardListId)
+      await this.props.setCardListState(this.props.cardListId)
       resetForm()
       setSubmitting(false)
       this.setState({

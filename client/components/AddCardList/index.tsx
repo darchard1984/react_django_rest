@@ -58,7 +58,7 @@ export class AddList extends React.Component<AddListProps, AddListState> {
     )
 
     if (resp.status == 201) {
-      await this.props.setCardListState()
+      await this.props.setCardListsState()
       resetForm()
       setSubmitting(false)
       this.setState({

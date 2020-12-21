@@ -10,15 +10,16 @@ import {
 import { BoardProps, BoardState } from './types'
 import authenticate, { signIn } from '../../lib/authenticate'
 
-import { AddCard } from '../AddCard'
 import AddCardList from '../AddCardList'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
+import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
 import Cards from '../Cards'
 import React from 'react'
+import { array } from 'yup'
 import { withRouter } from 'next/router'
 
 class BoardComponent extends React.Component<BoardProps, BoardState> {
@@ -41,6 +42,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         title: '',
       },
       cardLists: [],
+      cards: [],
+      showSpinner: true,
       errors: {
         requestError: {
           status: false,
@@ -77,6 +80,14 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           idToken
         )
 
+        const allCards = []
+        for (let i = 0; i < cardLists.data.length; i++) {
+          if (cardLists.data[i].cards.length) {
+            const cards = await this.getCards(cardLists.data[i].cards, idToken)
+            allCards.push(cards.data)
+          }
+        }
+
         this.setState({
           user: {
             uid: currentUser.uid,
@@ -84,8 +95,10 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
             pk: authenticated.data.pk,
             boards: authenticated.data.boards,
           },
+          showSpinner: false,
           board: board.data,
           cardLists: cardLists.data,
+          cards: allCards,
         })
       }
     }
@@ -112,6 +125,21 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     const lists = cardListIds.join(',')
     const resp: AxiosResponse<CardList[]> = await this.client.get(
       `/card-lists/?pks=${lists}`,
+      {
+        headers: this.client.setAuthHeader(idToken),
+      }
+    )
+
+    return resp
+  }
+
+  async getCards(
+    cardIds: number[],
+    idToken: string
+  ): Promise<AxiosResponse<Card[]>> {
+    const ids = cardIds.join(',')
+    const resp: AxiosResponse<Card[]> = await this.client.get(
+      `/cards/?pks=${ids}`,
       {
         headers: this.client.setAuthHeader(idToken),
       }
@@ -150,6 +178,18 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     })
   }
 
+  private filterCards(cardListId: number): Card[] {
+    const cards = (this.state.cards.filter(
+      (card: Card) => card[0].card_list === cardListId
+    ) as unknown) as Card[][]
+
+    if (!cards.length) {
+      return []
+    }
+
+    return cards[0]
+  }
+
   getBoardIdFromPath() {
     return this.props.router.query.boardId
   }
@@ -173,13 +213,13 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           </Alert>
         </Flex>
         <Box position="relative" left="50%" top="calc(50vh - 60px)">
-          <Spinner display={!this.state.user.pk ? 'flex' : 'none'} />
+          <Spinner display={this.state.showSpinner ? 'flex' : 'none'} />
         </Box>
 
         <Flex
           flexDirection="column"
           width="100%"
-          display={Object.keys(this.state.board).length ? 'flex' : 'none'}
+          display={!this.state.showSpinner ? 'flex' : 'none'}
         >
           <Heading
             as="h1"
@@ -207,6 +247,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
               {this.state.cardLists.map((cardList) => (
                 <CardListPanel
                   cardList={cardList}
+                  cards={this.filterCards(cardList.pk)}
                   idToken={this.state.user.idToken}
                   key={cardList.pk}
                 />

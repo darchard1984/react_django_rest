@@ -8,4 +8,5 @@ export type CardsState = {
 export type CardsProps = {
   idToken: string
   cardList: CardList
+  cards: Card[] | []
 }

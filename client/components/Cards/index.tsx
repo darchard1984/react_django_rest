@@ -18,13 +18,9 @@ export class Cards extends React.Component<CardsProps, CardsState> {
   }
 
   async componentDidMount() {
-    if (this.props.cardList.cards.length) {
-      const cards = await this.getCards(
-        this.props.cardList.cards,
-        this.props.idToken
-      )
+    if (this.props.cards.length) {
       this.setState({
-        cards: cards.data,
+        cards: this.props.cards,
       })
     }
   }

@@ -13,7 +13,7 @@ class ApiClient {
   constructor() {
     this.api = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-      timeout: 1000,
+      timeout: 5000,
     })
   }
 

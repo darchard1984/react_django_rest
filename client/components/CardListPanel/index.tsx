@@ -31,7 +31,11 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         </Text>
       </Flex>
 
-      <Cards cardList={props.cardList} idToken={props.idToken} />
+      <Cards
+        cardList={props.cardList}
+        idToken={props.idToken}
+        cards={props.cards}
+      />
     </Flex>
   )
 }

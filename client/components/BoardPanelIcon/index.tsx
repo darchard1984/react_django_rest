@@ -1,4 +1,3 @@
-import BoardPanel from '../BoardPanel'
 import { BoardPanelIconProps } from './types'
 import { IconButton } from '@chakra-ui/react'
 import React from 'react'

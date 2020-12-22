@@ -54,7 +54,7 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
               <AddCard
                 cardListId={props.cardList.pk}
                 idToken={props.idToken}
-                setCardListState={props.setCardListState}
+                setBoardState={props.setBoardState}
                 nextPosition={props.cards.length}
               />
             </Flex>

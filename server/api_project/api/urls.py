@@ -29,4 +29,5 @@ urlpatterns = [
     ),
     path('api/v1/card/', views.create_card, name='create_card'),
     path('api/v1/cards/', views.get_cards, name='get_cards'),
+    path('api/v1/cards/update/', views.update_cards, name='update_cards'),
 ]

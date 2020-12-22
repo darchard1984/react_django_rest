@@ -17,7 +17,7 @@ import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
-import { Console } from 'console'
+import { DropResult } from 'react-beautiful-dnd'
 import React from 'react'
 import { array } from 'yup'
 import { withRouter } from 'next/router'
@@ -56,7 +56,6 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
   async componentDidMount() {
     if (!this.state.user.pk) {
       let currentUser = await signIn()
-
       if (!currentUser) {
         this.props.router.push('/')
         return
@@ -66,42 +65,55 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         currentUser,
         this.setRequestErrorState.bind(this)
       )
-
       if (
-        authenticated.status === 200 &&
+        authenticated.status !== 200 &&
         authenticated.data.firebase_uid === currentUser.uid
       ) {
-        const idToken = await currentUser.getIdToken()
-        const boardId = this.props.router.query.boardId as string
-        const board = await this.getBoard(idToken, boardId)
+        this.props.router.push('/')
+        return
+      }
 
-        const cardLists = await this.getCardLists(
-          board.data.card_lists,
-          idToken
-        )
+      const idToken = await currentUser.getIdToken()
+      this.setState({
+        user: {
+          uid: currentUser.uid,
+          idToken,
+          pk: authenticated.data.pk,
+          boards: authenticated.data.boards,
+        },
+      })
+      await this.setBoardState(idToken)
+      this.setState({ showSpinner: false })
+    }
+  }
 
-        const allCards = []
-        for (let i = 0; i < cardLists?.data.length; i++) {
-          if (cardLists.data[i].cards.length) {
-            const cards = await this.getCards(cardLists.data[i].cards, idToken)
-            allCards.push(cards.data)
-          }
+  async setBoardState(idToken: string) {
+    const boardId = this.props.router.query.boardId as string
+    const board = await this.getBoard(this.state.user.idToken, boardId)
+
+    let cardLists: CardList[]
+    const allCards = []
+    if (board?.data.card_lists.length) {
+      const cardListsResp = await this.getCardLists(
+        board.data.card_lists,
+        this.state.user.idToken
+      )
+
+      cardLists = cardListsResp?.data
+
+      for (let i = 0; i < cardLists.length; i++) {
+        if (cardLists[i].cards.length) {
+          const cards = await this.getCards(cardLists[i].cards, idToken)
+          allCards.push(cards.data)
         }
-
-        this.setState({
-          user: {
-            uid: currentUser.uid,
-            idToken,
-            pk: authenticated.data.pk,
-            boards: authenticated.data.boards,
-          },
-          showSpinner: false,
-          board: board.data,
-          cardLists: cardLists?.data || [],
-          cards: allCards,
-        })
       }
     }
+
+    this.setState({
+      board: board.data,
+      cardLists: cardLists || [],
+      cards: allCards,
+    })
   }
 
   async getBoard(
@@ -157,56 +169,39 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     return resp
   }
 
-  async setCardListsState() {
-    const board = await this.getBoard(
-      this.state.user.idToken,
-      this.state.board.pk.toString()
-    )
-    const cardLists = await this.getCardLists(
-      board.data.card_lists,
-      this.state.user.idToken
-    )
+  onDragEnd = async (result: DropResult) => {
+    const { destination, source } = result
 
-    this.setState({
-      board: {
-        ...this.state.board,
-        card_lists: cardLists.data.map((cardList) => cardList.pk),
-      },
-      cardLists: cardLists.data || [],
-    })
-  }
+    if (!destination) return
 
-  async setCardListState(cardListId: number) {
-    const cardList = await this.getCardList(cardListId)
-    const listCards = await this.getCards(
-      cardList.data.cards,
-      this.state.user.idToken
-    )
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
 
-    const allCardsCopy = [...this.state.cards]
-    const allCardsIndex = allCardsCopy.findIndex(
-      (card) => listCards.data[0].card_list === card[0].card_list
-    )
+    const allCardsCopy = JSON.parse(JSON.stringify(this.state.cards))
+    const listCards = allCardsCopy.filter((cards) => {
+      if (cards.length) {
+        return cards[0].card_list.toString() === source.droppableId
+      }
+    })[0]
+    const sourceCard = listCards.splice(source.index, 1)
 
-    allCardsCopy.splice(allCardsIndex, 1)
-    allCardsCopy.splice(allCardsIndex, 0, listCards.data)
-
-    const allCardListsCopy = [...this.state.cardLists]
-    const allCardListsIndex = allCardListsCopy.findIndex(
-      (allCardList) => allCardList.pk === cardList.data.pk
-    )
-
-    allCardListsCopy.splice(allCardListsIndex, 1)
-    allCardListsCopy.splice(allCardListsIndex, 0, cardList.data)
+    listCards.splice(destination.index, 0, sourceCard[0])
+    listCards.forEach((card, index) => (card.position = index))
 
     this.setState({
       cards: allCardsCopy,
-      cardLists: allCardListsCopy,
     })
-  }
 
-  async onDragEnd(results) {
-    console.log(results)
+    await this.client.put(
+      '/cards/update/',
+      { data: listCards },
+      { headers: this.client.setAuthHeader(this.state.user.idToken) },
+      this.setRequestErrorState.bind(this)
+    )
   }
 
   private setRequestErrorState() {
@@ -290,7 +285,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                   cardList={cardList}
                   cards={this.filterCards(cardList.pk)}
                   idToken={this.state.user.idToken}
-                  setCardListState={this.setCardListState.bind(this)}
+                  setBoardState={this.setBoardState.bind(this)}
                   onDragEnd={this.onDragEnd.bind(this)}
                   key={cardList.pk}
                 />
@@ -298,7 +293,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
               <AddCardList
                 boardId={this.state.board.pk}
                 idToken={this.state.user.idToken}
-                setCardListsState={this.setCardListsState.bind(this)}
+                setBoardState={this.setBoardState.bind(this)}
               />
             </Flex>
           </Box>

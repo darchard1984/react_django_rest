@@ -6,7 +6,7 @@ export type CardListPanelProps = {
   idToken: string
   cards: Card[] | []
   onDragEnd: (results: any) => void
-  setCardListState: (cardListId: number) => void
+  setBoardState: (idToken: string) => void
 }
 
 export type CardListPanelState = {

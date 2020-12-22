@@ -1,7 +1,7 @@
 export type AddListProps = {
   boardId: number
   idToken: string
-  setCardListsState: () => Promise<void>
+  setBoardState: (idToken: string) => Promise<void>
 }
 
 export type AddListState = {

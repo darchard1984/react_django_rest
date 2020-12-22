@@ -2,7 +2,7 @@ export type AddCardProps = {
   cardListId: number
   idToken: string
   nextPosition: number
-  setCardListState: (cardListId: number) => void
+  setBoardState: (idToken: string) => void
 }
 
 export type AddCardState = {

@@ -64,7 +64,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
     )
 
     if (resp.status == 201) {
-      await this.props.setCardListState(this.props.cardListId)
+      await this.props.setBoardState(this.props.idToken)
       resetForm()
       setSubmitting(false)
       this.setState({

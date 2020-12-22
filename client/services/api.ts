@@ -64,6 +64,23 @@ class ApiClient {
     }
   }
 
+  async put(
+    path: string,
+    data: any,
+    config?: AxiosRequestConfig,
+    callback?: () => void
+  ): Promise<AxiosResponse> {
+    try {
+      const resp = await this.api.put(path, data, config || {})
+
+      return resp
+    } catch (error) {
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      if (callback) callback()
+    }
+  }
+
   async delete(
     path: string,
     config?: AxiosRequestConfig,

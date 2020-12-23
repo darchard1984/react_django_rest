@@ -1,3 +1,5 @@
+import { Board } from '../AddBoard/types'
+
 export type User = {
   uid: string
   idToken: string
@@ -5,18 +7,9 @@ export type User = {
   boards: number[]
 }
 
-export type UserBoard = {
-  created_at: string
-  updated_at: string
-  pk: number
-  title: string
-  user: number
-  card_lists: number[]
-}
-
 export type HomeState = {
   user: User
-  userBoards: UserBoard[]
+  boards: Board[]
   errors: {
     requestError: {
       status: boolean

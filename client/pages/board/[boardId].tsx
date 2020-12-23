@@ -1,12 +1,9 @@
-import React from 'react'
-import { useRouter } from 'next/router'
+import React, { ReactElement } from 'react'
 
-const Board = () => {
-  const router = useRouter()
+import Board from '../../components/Board'
 
-  const { boardId } = router.query
-
-  return <p>Board: {boardId}</p>
+const BoardPage: React.FC = () => {
+  return <Board />
 }
 
-export default Board
+export default BoardPage

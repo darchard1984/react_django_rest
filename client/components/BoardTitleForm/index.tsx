@@ -21,7 +21,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
     { setErrors, resetForm, setSubmitting }
   ) => {
     setSubmitting(true)
-    const { boardTitle } = BoardTitleFormSchema.cast(values)
+    const { boardTitle } = BoardTitleFormSchema.cast({ ...values })
 
     const resp = await client.post(
       '/board/',
@@ -36,7 +36,7 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
         })
     )
 
-    if (resp?.status == 201) {
+    if (resp.status == 201) {
       await props.setBoardsState()
       resetForm()
       setSubmitting(false)

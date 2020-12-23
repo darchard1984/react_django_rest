@@ -7,20 +7,20 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react'
-import { HomeState, UserBoard, UserResponse } from './types'
+import { HomeState, UserResponse } from './types'
+import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
-import AddBoardPanel from '../AddBoardPanel'
+import AddBoardPanel from '../AddBoard'
 import ApiClient from '../../services/api'
 import { AxiosResponse } from 'axios'
+import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
 import React from 'react'
-import auth from '../../lib/firebase'
-import firebase from 'firebase/app'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()
-  constructor(props: any) {
+  constructor(props) {
     super(props)
     this.state = {
       user: {
@@ -29,7 +29,7 @@ class Home extends React.Component<any, HomeState> {
         pk: null,
         boards: [],
       },
-      userBoards: [],
+      boards: [],
       errors: {
         requestError: {
           status: false,
@@ -40,66 +40,41 @@ class Home extends React.Component<any, HomeState> {
   }
 
   async componentDidMount() {
-    let currentUser = auth.currentUser
-    if (!currentUser) {
-      await this.signIn()
-      currentUser = auth.currentUser
+    if (!this.state.user.pk) {
+      let currentUser = await signIn(this.setRequestErrorState.bind(this))
+
+      if (!currentUser) return
+
+      const authenticated = await authenticate(
+        currentUser,
+        this.setRequestErrorState.bind(this)
+      )
+      if (
+        authenticated.status === 200 &&
+        authenticated.data.firebase_uid === currentUser.uid
+      ) {
+        const idToken = await currentUser.getIdToken()
+        this.setState({
+          user: {
+            uid: currentUser.uid,
+            idToken,
+            pk: authenticated.data.pk,
+            boards: authenticated.data.boards,
+          },
+        })
+        await this.setBoardsState()
+      }
     }
-
-    await this.authenticate(currentUser)
-    await this.setBoardsState()
-  }
-
-  async authenticate(currentUser: firebase.User) {
-    const idToken = await currentUser.getIdToken()
-
-    const resp: AxiosResponse<UserResponse> = await this.client.get(
-      '/authenticate/',
-      {
-        headers: this.client.setAuthHeader(idToken),
-      },
-      this.setRequestErrorState.bind(this)
-    )
-
-    if (resp?.status === 200 && resp?.data.firebase_uid === currentUser.uid) {
-      this.setState({
-        user: {
-          uid: currentUser.uid,
-          idToken,
-          pk: resp.data.pk,
-          boards: resp.data.boards,
-        },
-      })
-    }
-  }
-
-  async signIn(): Promise<firebase.auth.UserCredential | undefined> {
-    try {
-      const r = await auth.signInAnonymously()
-
-      return r
-    } catch (e) {
-      this.setRequestErrorState()
-    }
-  }
-
-  async getUser(): Promise<UserResponse | undefined> {
-    const resp: AxiosResponse<UserResponse> = await this.client.get(
-      `/user/${this.state.user.pk}/`,
-      {
-        headers: this.client.setAuthHeader(this.state.user.idToken),
-      },
-      this.setRequestErrorState.bind(this)
-    )
-
-    const user = resp?.data
-    return user
   }
 
   async setBoardsState() {
-    const user = await this.getUser()
+    const user = await getUser(
+      this.state.user.pk,
+      this.state.user.idToken,
+      this.setRequestErrorState.bind(this)
+    )
 
-    if (!user?.boards.length) {
+    if (!user.boards.length) {
       this.setState((prev) => {
         return {
           ...prev,
@@ -107,14 +82,14 @@ class Home extends React.Component<any, HomeState> {
             ...prev.user,
             boards: [],
           },
-          userBoards: [],
+          boards: [],
         }
       })
       return
     }
 
     const boardstring = user.boards.join(',')
-    let userBoards: UserBoard[]
+    let boards: Board[]
 
     const resp = await this.client.get(
       `/boards/?pks=${boardstring}`,
@@ -124,18 +99,16 @@ class Home extends React.Component<any, HomeState> {
       this.setRequestErrorState.bind(this)
     )
 
-    if (!resp) return
-
-    userBoards = resp.data
+    boards = resp.data
 
     this.setState((prev) => {
       return {
         ...prev,
         user: {
           ...prev.user,
-          boards: userBoards.map((board) => board.pk),
+          boards: boards.map((board) => board.pk),
         },
-        userBoards,
+        boards,
       }
     })
   }
@@ -161,7 +134,6 @@ class Home extends React.Component<any, HomeState> {
           position="absolute"
           width="100%"
           flexWrap="wrap"
-          id="outer"
         >
           <Alert status="error" maxWidth="500px">
             <AlertIcon />
@@ -173,15 +145,19 @@ class Home extends React.Component<any, HomeState> {
 
         <Flex
           flexDirection="column"
-          width={{ base: '100%', xl: '1440px' }}
-          margin="0 auto"
-          display={this.state.userBoards.length ? 'flex' : 'none'}
+          display={this.state.boards.length ? 'flex' : 'none'}
         >
-          <Flex borderBottom="1px solid #c5c1c1c9">
-            <Heading as="h1" fontSize="lg" mt="8" ml="4" mb="4">
-              Your boards
-            </Heading>
-          </Flex>
+          <Heading
+            as="h1"
+            fontSize="lg"
+            mt="8"
+            ml="4"
+            mb="4"
+            borderBottom="1px solid lightGrey"
+          >
+            Your boards
+          </Heading>
+
           <Flex
             justifyContent="flex-start"
             alignItems="flex-start"
@@ -189,7 +165,7 @@ class Home extends React.Component<any, HomeState> {
             width="100%"
             flexWrap="wrap"
           >
-            {this.state.userBoards.map((board) => (
+            {this.state.boards.map((board) => (
               <BoardPanel
                 key={board.pk}
                 board={board}
@@ -204,6 +180,15 @@ class Home extends React.Component<any, HomeState> {
             />
           </Flex>
         </Flex>
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100vh"
+          display={!this.state.user.pk ? 'flex' : 'none'}
+        >
+          <Spinner />
+        </Flex>
 
         <Flex
           justifyContent="center"
@@ -214,7 +199,6 @@ class Home extends React.Component<any, HomeState> {
           alignItems="center"
           display={!this.state.user.boards.length ? 'flex' : 'none'}
         >
-          <Spinner display={!this.state.user.pk ? 'block' : 'none'} />
           <Box display={this.state.user.pk ? 'block' : 'none'}>
             <BoardTitleForm
               setBoardsState={this.setBoardsState.bind(this)}

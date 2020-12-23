@@ -13,7 +13,7 @@ class ApiClient {
   constructor() {
     this.api = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-      timeout: 1000,
+      timeout: 5000,
     })
   }
 
@@ -35,7 +35,7 @@ class ApiClient {
     path: string,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.get(path, config || {})
 
@@ -43,7 +43,7 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
     }
   }
 
@@ -52,7 +52,7 @@ class ApiClient {
     data: any,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.post(path, data, config || {})
 
@@ -60,7 +60,24 @@ class ApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
+    }
+  }
+
+  async put(
+    path: string,
+    data: any,
+    config?: AxiosRequestConfig,
+    callback?: () => void
+  ): Promise<AxiosResponse> {
+    try {
+      const resp = await this.api.put(path, data, config || {})
+
+      return resp
+    } catch (error) {
+      const e = new ApiClientError(`${error.message}`)
+      this._handleError(e)
+      if (callback) callback()
     }
   }
 
@@ -68,14 +85,14 @@ class ApiClient {
     path: string,
     config?: AxiosRequestConfig,
     callback?: () => void
-  ): Promise<AxiosResponse | undefined> {
+  ): Promise<AxiosResponse> {
     try {
       const resp = await this.api.delete(path, config || {})
       return resp
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this._handleError(e)
-      callback()
+      if (callback) callback()
     }
   }
 }

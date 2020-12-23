@@ -23,6 +23,8 @@ const myTheme = {
   colors: {
     ...theme.colors,
     lightGrey: '#e0e0e0',
+    lighterGrey: '#f5f5f5',
+    boardBackground: '#000',
     errorRed: '#ff00002b',
   },
 }

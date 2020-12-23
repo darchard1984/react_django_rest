@@ -115,8 +115,8 @@ def update_cards(request):
 
     for card in cards_to_update:
         data = {
-            'title': card.get('title'),
-            'description': card.get('description'),
+            # 'title': card.get('title'),
+            # 'description': card.get('description'),
             'position': card.get('position'),
             'card_list': card.get('card_list'),
         }
@@ -136,12 +136,12 @@ def update_cards(request):
             break
 
     if did_fail:
-        return Response(status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     for card in serialized_cards:
         card.save()
 
-    return Response(status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])

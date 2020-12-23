@@ -115,8 +115,8 @@ def update_cards(request):
 
     for card in cards_to_update:
         data = {
-            # 'title': card.get('title'),
-            # 'description': card.get('description'),
+            'title': card.get('title'),
+            'description': card.get('description'),
             'position': card.get('position'),
             'card_list': card.get('card_list'),
         }

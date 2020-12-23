@@ -211,7 +211,6 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       const sourceCardListCardIdIndex = sourceCardList.cards.findIndex(
         (cardId) => cardId === sourceCard[0].pk
       )
-      destCards = _getCardsForList(allCardsCopy, destination)
 
       // Update cardList.cards relationships
       sourceCardList.cards.splice(sourceCardListCardIdIndex, 1)
@@ -219,6 +218,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       sourceCard[0].card_list = parseInt(destination.droppableId)
 
       // Update cards
+      destCards = _getCardsForList(allCardsCopy, destination)
       const destCardsWasEmpty = destCards.length ? false : true
 
       destCards.splice(destination.index, 0, sourceCard[0])

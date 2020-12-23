@@ -123,11 +123,12 @@ def update_cards(request):
 
         try:
             entity = Card.objects.get(pk=card.get('pk'))
+
         except Card.DoesNotExist:
             did_fail = True
             break
 
-        serialized_card = CardSerializer(entity, data)
+        serialized_card = CardWriteSerializer(entity, data)
         if serialized_card.is_valid():
             serialized_cards.append(serialized_card)
         else:

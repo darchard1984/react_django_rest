@@ -5,10 +5,5 @@ export type CardListPanelProps = {
   cardList: CardList
   idToken: string
   cards: Card[] | []
-  onDragEnd: (results: any) => void
   setBoardState: (idToken: string) => void
-}
-
-export type CardListPanelState = {
-  cards: Card[]
 }

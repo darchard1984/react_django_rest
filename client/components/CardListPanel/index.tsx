@@ -1,10 +1,9 @@
-import { CardListPanelProps, CardListPanelState } from './types'
 import { Flex, Text } from '@chakra-ui/react'
 
 import AddCard from '../AddCard'
 import { Card } from '../AddCard/types'
 import CardComponent from '../Card'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { CardListPanelProps } from './types'
 import { Droppable } from 'react-beautiful-dnd'
 import React from 'react'
 
@@ -18,8 +17,9 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
 
   return (
     <Flex
-      width="225px"
+      maxWidth="225px"
       flexDirection="column"
+      flexGrow={1}
       alignItems="center"
       justifyContent="flex-start"
       background="lightGrey"
@@ -40,27 +40,24 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
           {props.cardList.title}
         </Text>
       </Flex>
-
-      <DragDropContext onDragEnd={props.onDragEnd}>
-        <Droppable droppableId={props.cardList.pk.toString()}>
-          {(provided) => (
-            <Flex
-              flexDirection="column"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {_renderCards()}
-              {provided.placeholder}
-              <AddCard
-                cardListId={props.cardList.pk}
-                idToken={props.idToken}
-                setBoardState={props.setBoardState}
-                nextPosition={props.cards.length}
-              />
-            </Flex>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <Droppable droppableId={props.cardList.pk.toString()}>
+        {(provided) => (
+          <Flex
+            flexDirection="column"
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {_renderCards()}
+            {provided.placeholder}
+            <AddCard
+              cardListId={props.cardList.pk}
+              idToken={props.idToken}
+              setBoardState={props.setBoardState}
+              nextPosition={props.cards.length}
+            />
+          </Flex>
+        )}
+      </Droppable>
     </Flex>
   )
 }

@@ -78,9 +78,11 @@ export class AddBoard extends React.Component<
         mr="4"
         mb="4"
         width="200px"
-        minHeight="150px"
+        minHeight="100px"
       >
         <IconButton
+          background="lighterGrey"
+          _hover={{ background: 'lightGrey' }}
           display={this.state.showForm ? 'none' : 'block'}
           aria-label="add a new board"
           icon={<AddIcon />}
@@ -112,15 +114,6 @@ export class AddBoard extends React.Component<
                         borderRadius=".3rem"
                         padding="4"
                       >
-                        <Flex justifyContent="flex-end" width="100%">
-                          <IconButton
-                            icon={<CloseIcon />}
-                            aria-label="Close add board input"
-                            size="xs"
-                            onClick={this.handlePanelInputClose}
-                          />
-                        </Flex>
-                        <Divider mt="2" mb="2" />
                         <Textarea
                           {...field}
                           id="board-title"
@@ -131,22 +124,30 @@ export class AddBoard extends React.Component<
                           padding="0"
                           maxLength="50"
                         />
-
+                        <Divider mt="2" mb="4" />
                         <FormErrorMessage fontSize="xs" mb="4">
                           {form.errors.boardTitle}
                         </FormErrorMessage>
-                        <Button
-                          type="submit"
-                          variant="outline"
-                          ml={['4', '8']}
-                          size="xs"
-                          alignSelf="flex-end"
-                          colorScheme="blue"
-                          isLoading={form.isSubmitting}
-                          isDisabled={!form.values.boardTitle}
-                        >
-                          Add
-                        </Button>
+                        <Flex justifyContent="flex-end" width="100%">
+                          <IconButton
+                            icon={<CloseIcon />}
+                            aria-label="Close add board input"
+                            size="xs"
+                            onClick={this.handlePanelInputClose}
+                          />
+                          <Button
+                            type="submit"
+                            variant="outline"
+                            ml="4"
+                            size="xs"
+                            alignSelf="flex-end"
+                            colorScheme="blue"
+                            isLoading={form.isSubmitting}
+                            isDisabled={!form.values.boardTitle}
+                          >
+                            Add
+                          </Button>
+                        </Flex>
                       </Flex>
                     </FormControl>
                   )}

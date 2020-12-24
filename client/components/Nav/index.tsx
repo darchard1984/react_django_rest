@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, Link } from '@chakra-ui/react'
 
 const Nav: React.FC = () => {
   return (
@@ -14,9 +14,9 @@ const Nav: React.FC = () => {
       boxShadow="5px -8px 15px 5px rgba(0,0,0,0.22)"
       background="#151515"
     >
-      <Box color="#fff" ml="8">
-        Lystly
-      </Box>
+      <Link href="/">
+        <Box color="#fff">Lystly</Box>
+      </Link>
     </Flex>
   )
 }

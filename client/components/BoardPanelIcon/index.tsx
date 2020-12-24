@@ -15,6 +15,8 @@ const BoardPanelIcon: React.FC<BoardPanelIconProps> = (props) => {
       width="1rem"
       onClick={_handleClick}
       ml="2"
+      background="lightGrey"
+      _hover={{ background: 'lightGrey' }}
     />
   )
 }

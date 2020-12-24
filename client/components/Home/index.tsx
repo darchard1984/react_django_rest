@@ -7,15 +7,14 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react'
-import { HomeState, UserResponse } from './types'
 import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
-import AddBoardPanel from '../AddBoard'
+import AddBoard from '../AddBoard'
 import ApiClient from '../../services/api'
-import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
+import { HomeState } from './types'
 import React from 'react'
 
 class Home extends React.Component<any, HomeState> {
@@ -174,7 +173,7 @@ class Home extends React.Component<any, HomeState> {
                 setErrorState={this.setRequestErrorState.bind(this)}
               />
             ))}
-            <AddBoardPanel
+            <AddBoard
               user={this.state.user}
               setBoardsState={this.setBoardsState.bind(this)}
             />

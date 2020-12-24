@@ -5,6 +5,8 @@ import {
   Box,
   Flex,
   Heading,
+  IconButton,
+  Link,
   Spinner,
 } from '@chakra-ui/react'
 import { BoardProps, BoardState } from './types'
@@ -18,6 +20,7 @@ import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
+import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { DropResult } from 'react-beautiful-dnd'
 import React from 'react'
 import { withRouter } from 'next/router'
@@ -301,10 +304,21 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           width="100%"
           display={!this.state.showSpinner ? 'flex' : 'none'}
         >
+          <Flex justifyContent="flex-start" alignItems="center" mt="8" ml="4">
+            <IconButton
+              mr="4"
+              icon={<ChevronLeftIcon />}
+              aria-label={'Back'}
+              onClick={() => this.props.router.push('/')}
+              background="lighterGrey"
+              _hover={{ background: 'lightGrey' }}
+            />
+          </Flex>
+
           <Heading
             as="h1"
             fontSize="lg"
-            mt="8"
+            mt="4"
             ml="4"
             mb="4"
             pb="4"

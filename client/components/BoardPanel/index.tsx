@@ -44,7 +44,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       borderRadius=".3rem"
       padding="4"
       wordBreak="break-word"
-      background="boardBackground"
+      background="lightGrey"
     >
       <Flex justifyContent="flex-end" width="100%">
         <BoardPanelIcon
@@ -60,8 +60,8 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
           boardId={props.board.pk}
         />
       </Flex>
-      <Divider mt="2" mb="2" color="#fff" />
-      <Text as="span" color="#fff">
+      <Divider mt="2" mb="2" />
+      <Text as="span" fontWeight="bold">
         {props.board.title}
       </Text>
     </Flex>

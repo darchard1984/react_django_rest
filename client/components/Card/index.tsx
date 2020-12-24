@@ -18,7 +18,7 @@ const CardComponent: React.FC<CardComponentProps> = (props) => {
           borderRadius=".3rem"
           padding="4"
           wordBreak="break-word"
-          background="boardBackground"
+          background="cardBackground"
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}

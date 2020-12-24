@@ -123,7 +123,7 @@ export class AddList extends React.Component<AddListProps, AddListState> {
                         alignItems="center"
                         flexDirection="column"
                         backgroundColor="#fff"
-                        boxShadow="-1px 5px 61px 5px #00000021"
+                        boxShadow="-1px 5px 8px 5px #00000021"
                         borderRadius=".3rem"
                         padding="4"
                         width="200px"

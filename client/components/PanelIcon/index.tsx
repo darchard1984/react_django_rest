@@ -1,10 +1,10 @@
-import { BoardPanelIconProps } from './types'
 import { IconButton } from '@chakra-ui/react'
+import { PanelIconProps } from './types'
 import React from 'react'
 
-const BoardPanelIcon: React.FC<BoardPanelIconProps> = (props) => {
+const PanelIcon: React.FC<PanelIconProps> = (props) => {
   const _handleClick = () => {
-    props.onIconClick(props.boardId)
+    props.onIconClick(props.pk)
   }
   return (
     <IconButton
@@ -14,11 +14,11 @@ const BoardPanelIcon: React.FC<BoardPanelIconProps> = (props) => {
       size="xs"
       width="1rem"
       onClick={_handleClick}
-      ml="2"
+      ml="1"
       background="lightGrey"
       _hover={{ background: 'lightGrey' }}
     />
   )
 }
 
-export default BoardPanelIcon
+export default PanelIcon

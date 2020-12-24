@@ -6,4 +6,5 @@ export type CardListPanelProps = {
   idToken: string
   cards: Card[] | []
   setBoardState: (idToken: string) => void
+  setErrorState: () => void
 }

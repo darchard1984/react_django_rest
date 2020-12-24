@@ -25,7 +25,7 @@ def _handle_get_delete_update(request, pk, serializer, model):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     elif request.method == 'PUT':
-        serialized = serializer(entity, data=request.data)
+        serialized = serializer(entity, data=request.data.get('data'))
 
         if serialized.is_valid():
             serialized.save()

@@ -7,4 +7,5 @@ export type BoardTitleFormState = {
 export type BoardTitleFormProps = {
   user: User
   setBoardsState: () => Promise<void>
+  title?: string
 }

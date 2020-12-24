@@ -27,6 +27,7 @@ const myTheme = {
     boardPanelBackground: '#b5b5b5',
     cardBackground: '#000',
     errorRed: '#ff00002b',
+    mask: '#0000007a',
   },
 }
 

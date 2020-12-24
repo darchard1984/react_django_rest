@@ -11,6 +11,7 @@ import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
 import AddBoard from '../AddBoard'
 import ApiClient from '../../services/api'
+import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
@@ -67,16 +68,15 @@ class Home extends React.Component<any, HomeState> {
   }
 
   async setBoardsState() {
-    const user = await getUser(
+    const userResp = await getUser(
       this.state.user.pk,
       this.state.user.idToken,
       this.setRequestErrorState.bind(this)
     )
 
-    if (!user.boards.length) {
+    if (!userResp.boards.length) {
       this.setState((prev) => {
         return {
-          ...prev,
           user: {
             ...prev.user,
             boards: [],
@@ -87,27 +87,21 @@ class Home extends React.Component<any, HomeState> {
       return
     }
 
-    const boardstring = user.boards.join(',')
-    let boards: Board[]
-
-    const resp = await this.client.get(
-      `/boards/?pks=${boardstring}`,
+    const resp: AxiosResponse<Board[]> = await this.client.get(
+      `/boards/?pks=${userResp.boards.join(',')}`,
       {
         headers: this.client.setAuthHeader(this.state.user.idToken),
       },
       this.setRequestErrorState.bind(this)
     )
 
-    boards = resp.data
-
     this.setState((prev) => {
       return {
-        ...prev,
         user: {
           ...prev.user,
-          boards: boards.map((board) => board.pk),
+          boards: userResp.boards,
         },
-        boards,
+        boards: resp.data.sort((a, b) => a.pk - b.pk),
       }
     })
   }

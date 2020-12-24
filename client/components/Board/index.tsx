@@ -76,6 +76,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         return
       }
 
+      if (!authenticated.data.boards.length) return this.props.router.push('/')
+
       const idToken = await currentUser.getIdToken()
       this.setState({
         user: {
@@ -124,7 +126,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     boardId: string
   ): Promise<AxiosResponse<Board>> {
     const resp: AxiosResponse<Board> = await this.client.get(
-      `/board/${boardId}`,
+      `/board/${boardId}/`,
       {
         headers: this.client.setAuthHeader(idToken),
       }
@@ -270,11 +272,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       return []
     }
 
-    return this.sortCardsByPosition(allCards[0])
-  }
-
-  private sortCardsByPosition(cards: Card[]) {
-    return cards.sort((a, b) => a.position - b.position)
+    return allCards[0].sort((a, b) => a.position - b.position)
   }
 
   render() {
@@ -345,6 +343,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                     cards={this.filterCards(cardList.pk)}
                     idToken={this.state.user.idToken}
                     setBoardState={this.setBoardState.bind(this)}
+                    setErrorState={this.setRequestErrorState.bind(this)}
                     key={cardList.pk}
                   />
                 ))}

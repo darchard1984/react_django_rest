@@ -8,7 +8,7 @@ import CardComponent from '../Card'
 import { CardListPanelProps } from './types'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Droppable } from 'react-beautiful-dnd'
-import EditCardListForm from '../EditCardListForm/EditCardListForm'
+import EditCardListForm from '../EditCardListForm'
 import { FaEdit } from 'react-icons/fa'
 import PanelIcon from '../PanelIcon'
 

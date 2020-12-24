@@ -39,7 +39,7 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
       { headers: client.setAuthHeader(props.idToken) },
       () =>
         setErrors({
-          listTitle: 'Something went wrong, could not save your list.',
+          listTitle: 'Something went wrong, could not update your list.',
         })
     )
 

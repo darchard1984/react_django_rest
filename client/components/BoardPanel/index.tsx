@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 
 import ApiClient from '../../services/api'
 import { BoardPanelProps } from '../BoardPanel/types'
-import EditBoard from '../EditBoard'
+import EditBoardForm from '../EditBoardForm'
 import { FaEdit } from 'react-icons/fa'
 import PanelIcon from '../PanelIcon'
 import { useRouter } from 'next/router'
@@ -56,13 +56,13 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       <Flex justifyContent="flex-end" width="100%">
         <PanelIcon
           icon={<FaEdit />}
-          ariaLabel="close board"
+          ariaLabel="edit board"
           onIconClick={_handleBoardEdit}
           pk={props.board.pk}
         />
         <PanelIcon
           icon={<ExternalLinkIcon />}
-          ariaLabel="board link"
+          ariaLabel="go to board"
           onIconClick={_handleBoardLink}
           pk={props.board.pk}
         />
@@ -77,7 +77,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       <Text as="span" fontWeight="bold">
         {props.board.title}
       </Text>
-      <EditBoard
+      <EditBoardForm
         display={showEditForm}
         title={props.board.title}
         pk={props.board.pk}

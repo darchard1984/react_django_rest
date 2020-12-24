@@ -1,6 +1,6 @@
 import { User } from '../Home/types'
 
-export type EditBoardProps = {
+export type EditBoardFormProps = {
   display: boolean
   title: string
   pk: number

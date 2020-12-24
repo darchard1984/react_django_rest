@@ -2,12 +2,11 @@ import { AddBoardPanelProps, AddBoardState, Board } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
-  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
   IconButton,
-  Textarea,
+  Input,
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
@@ -78,7 +77,7 @@ export class AddBoard extends React.Component<
         mr="4"
         mb="4"
         width="200px"
-        minHeight="100px"
+        minHeight={this.state.showForm ? '0px' : '100px'}
       >
         <IconButton
           background="lighterGrey"
@@ -114,17 +113,16 @@ export class AddBoard extends React.Component<
                         borderRadius=".3rem"
                         padding="4"
                       >
-                        <Textarea
+                        <Input
                           {...field}
                           id="board-title"
                           isRequired={true}
                           fontSize="sm"
-                          resize="none"
-                          variant=""
+                          variant="flushed"
                           padding="0"
                           maxLength="50"
+                          mb="4"
                         />
-                        <Divider mt="2" mb="4" />
                         <FormErrorMessage fontSize="xs" mb="4">
                           {form.errors.boardTitle}
                         </FormErrorMessage>

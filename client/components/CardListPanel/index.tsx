@@ -1,4 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react'
+import React, { useState } from 'react'
 
 import AddCard from '../AddCard'
 import ApiClient from '../../services/api'
@@ -7,10 +8,13 @@ import CardComponent from '../Card'
 import { CardListPanelProps } from './types'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Droppable } from 'react-beautiful-dnd'
+import EditCardListForm from '../EditCardListForm/EditCardListForm'
+import { FaEdit } from 'react-icons/fa'
 import PanelIcon from '../PanelIcon'
-import React from 'react'
 
 const CardListPanel: React.FC<CardListPanelProps> = (props) => {
+  const [showEditForm, _setShowEditForm] = useState(false)
+
   const _renderCards = () => {
     const cards = props.cards as Card[]
     return cards.map((card, index) => (
@@ -34,6 +38,10 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
     }
   }
 
+  const _handleBoardEdit = (cardListId: number) => {
+    _setShowEditForm(true)
+  }
+
   return (
     <Flex
       maxWidth="225px"
@@ -52,20 +60,38 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         color="#000"
         fontWeight="bold"
         borderRadius=".3rem"
-        alignItems="center"
+        alignItems="flex-start"
         mb="2"
         justifyContent="space-between"
       >
         <Text as="span" wordBreak="break-word">
           {props.cardList.title}
         </Text>
-        <PanelIcon
-          onIconClick={_handleCardListDelete}
-          pk={props.cardList.pk}
-          icon={<CloseIcon />}
-          ariaLabel="Delete card list"
-        />
+        <Flex>
+          <PanelIcon
+            onIconClick={_handleBoardEdit}
+            pk={props.cardList.pk}
+            icon={<FaEdit />}
+            ariaLabel="Edit card list"
+          />
+          <PanelIcon
+            onIconClick={_handleCardListDelete}
+            pk={props.cardList.pk}
+            icon={<CloseIcon />}
+            ariaLabel="Delete card list"
+          />
+        </Flex>
       </Flex>
+      <EditCardListForm
+        display={showEditForm}
+        title={props.cardList.title}
+        pk={props.cardList.pk}
+        idToken={props.idToken}
+        boardId={props.cardList.board}
+        setShowEditFormState={_setShowEditForm}
+        setBoardState={props.setBoardState}
+        setErrorState={props.setErrorState}
+      />
       <Droppable droppableId={props.cardList.pk.toString()}>
         {(provided) => (
           <Flex

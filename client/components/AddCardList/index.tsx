@@ -133,14 +133,15 @@ export class AddList extends React.Component<AddListProps, AddListState> {
                           id="list-title"
                           isRequired={true}
                           fontSize="sm"
-                          variant=""
+                          variant="flushed"
                           padding="0"
                           maxLength="50"
+                          mb="4"
                         />
                         <FormErrorMessage fontSize="xs" mb="4">
                           {form.errors.listTitle}
                         </FormErrorMessage>
-                        <Divider mb="4" />
+
                         <Flex justifyContent="flex-end" width="100%">
                           <IconButton
                             aria-label="add a new list"

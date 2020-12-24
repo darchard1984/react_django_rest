@@ -55,15 +55,15 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
     >
       <Flex justifyContent="flex-end" width="100%">
         <PanelIcon
-          icon={<FaEdit />}
-          ariaLabel="edit board"
-          onIconClick={_handleBoardEdit}
-          pk={props.board.pk}
-        />
-        <PanelIcon
           icon={<ExternalLinkIcon />}
           ariaLabel="go to board"
           onIconClick={_handleBoardLink}
+          pk={props.board.pk}
+        />
+        <PanelIcon
+          icon={<FaEdit />}
+          ariaLabel="edit board"
+          onIconClick={_handleBoardEdit}
           pk={props.board.pk}
         />
         <PanelIcon

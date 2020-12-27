@@ -18,7 +18,14 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
   const _renderCards = () => {
     const cards = props.cards as Card[]
     return cards.map((card, index) => (
-      <CardComponent card={card} key={card.pk} index={index} />
+      <CardComponent
+        card={card}
+        key={card.pk}
+        index={index}
+        idToken={props.idToken}
+        setErrorState={props.setErrorState}
+        setBoardState={props.setBoardState}
+      />
     ))
   }
 
@@ -38,7 +45,7 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
     }
   }
 
-  const _handleBoardEdit = (cardListId: number) => {
+  const _handleCardListEdit = (cardListId: number) => {
     _setShowEditForm(true)
   }
 
@@ -69,7 +76,7 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         </Text>
         <Flex>
           <PanelIcon
-            onIconClick={_handleBoardEdit}
+            onIconClick={_handleCardListEdit}
             pk={props.cardList.pk}
             icon={<FaEdit />}
             ariaLabel="Edit card list"

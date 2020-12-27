@@ -1,4 +1,5 @@
-import { IconButton } from '@chakra-ui/react'
+import { IconButton, background } from '@chakra-ui/react'
+
 import { PanelIconProps } from './types'
 import React from 'react'
 
@@ -15,8 +16,9 @@ const PanelIcon: React.FC<PanelIconProps> = (props) => {
       width="1rem"
       onClick={_handleClick}
       ml="1"
-      background="lightGrey"
-      _hover={{ background: 'lightGrey' }}
+      background={props.background ? props.background : 'lightGrey'}
+      color={props.color ? props.color : '#000'}
+      _hover={props._hover ? props._hover : { background: 'lightGrey' }}
     />
   )
 }

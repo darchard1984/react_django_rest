@@ -6,7 +6,6 @@ import {
   Flex,
   Heading,
   IconButton,
-  Link,
   Spinner,
 } from '@chakra-ui/react'
 import { BoardProps, BoardState } from './types'

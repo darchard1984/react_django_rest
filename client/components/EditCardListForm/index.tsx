@@ -32,9 +32,9 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     setSubmitting(true)
 
     const resp: AxiosResponse = await client.put(
-      `/card-list/${props.pk}/`,
+      `/card-list/${props.cardList.pk}/`,
       {
-        data: { title: listTitle, board: props.boardId },
+        data: { title: listTitle, board: props.cardList.board },
       },
       { headers: client.setAuthHeader(props.idToken) },
       () =>
@@ -52,12 +52,9 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
   }
 
   return (
-    <EditPanel
-      display={props.display}
-      setShowEditFormState={props.setShowEditFormState}
-    >
+    <EditPanel display={props.display}>
       <Formik
-        initialValues={{ listTitle: props.title }}
+        initialValues={{ listTitle: props.cardList.title }}
         onSubmit={_handleSumbit}
         validationSchema={EditCardListFormPanelSchema}
         enableReinitialize={true}

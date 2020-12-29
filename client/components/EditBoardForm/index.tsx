@@ -32,7 +32,7 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     setSubmitting(true)
 
     const resp: AxiosResponse = await client.put(
-      `/board/${props.pk}/`,
+      `/board/${props.board.pk}/`,
       {
         data: { title: boardTitle, user: props.user.pk },
       },
@@ -52,12 +52,9 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
   }
 
   return (
-    <EditPanel
-      display={props.display}
-      setShowEditFormState={props.setShowEditFormState}
-    >
+    <EditPanel display={props.display}>
       <Formik
-        initialValues={{ boardTitle: props.title }}
+        initialValues={{ boardTitle: props.board.title }}
         onSubmit={_handleSumbit}
         validationSchema={EditBoardFormPanelSchema}
         enableReinitialize={true}

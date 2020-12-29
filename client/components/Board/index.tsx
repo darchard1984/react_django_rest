@@ -316,11 +316,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           <Heading
             as="h1"
             fontSize="lg"
-            mt="4"
-            ml="4"
-            mb="4"
+            m="4"
             pb="4"
-            maxWidth="50%"
             wordBreak="break-word"
             borderBottom="1px solid #c5c1c1c9"
           >
@@ -341,7 +338,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                   <CardListPanel
                     cardList={cardList}
                     cards={this.filterCards(cardList.pk)}
-                    idToken={this.state.user.idToken}
+                    user={this.state.user}
                     setBoardState={this.setBoardState.bind(this)}
                     setErrorState={this.setRequestErrorState.bind(this)}
                     key={cardList.pk}

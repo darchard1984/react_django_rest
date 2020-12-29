@@ -79,8 +79,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       </Text>
       <EditBoardForm
         display={showEditForm}
-        title={props.board.title}
-        pk={props.board.pk}
+        board={props.board}
         user={props.user}
         setShowEditFormState={_setShowEditForm}
         setBoardsState={props.setBoardsState}

@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
 import AddCard from '../AddCard'
@@ -15,17 +15,18 @@ import PanelIcon from '../PanelIcon'
 const CardListPanel: React.FC<CardListPanelProps> = (props) => {
   const [showEditForm, _setShowEditForm] = useState(false)
 
-  const _renderCards = () => {
+  const _renderCards = (props: CardListPanelProps) => {
     const cards = props.cards as Card[]
     return cards.map((card, index) => (
-      <CardComponent
-        card={card}
-        key={card.pk}
-        index={index}
-        idToken={props.idToken}
-        setErrorState={props.setErrorState}
-        setBoardState={props.setBoardState}
-      />
+      <Box key={card.pk}>
+        <CardComponent
+          card={card}
+          index={index}
+          idToken={props.user.idToken}
+          setErrorState={props.setErrorState}
+          setBoardState={props.setBoardState}
+        />
+      </Box>
     ))
   }
 
@@ -35,13 +36,13 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
     const resp = await client.delete(
       `/card-list/${cardListId}/`,
       {
-        headers: client.setAuthHeader(`${props.idToken}`),
+        headers: client.setAuthHeader(`${props.user.idToken}`),
       },
       props.setErrorState
     )
 
     if (resp.status === 204) {
-      props.setBoardState(props.idToken)
+      props.setBoardState(props.user.idToken)
     }
   }
 
@@ -91,10 +92,8 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
       </Flex>
       <EditCardListForm
         display={showEditForm}
-        title={props.cardList.title}
-        pk={props.cardList.pk}
-        idToken={props.idToken}
-        boardId={props.cardList.board}
+        cardList={props.cardList}
+        idToken={props.user.idToken}
         setShowEditFormState={_setShowEditForm}
         setBoardState={props.setBoardState}
         setErrorState={props.setErrorState}
@@ -106,11 +105,11 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {_renderCards()}
+            {_renderCards(props)}
             {provided.placeholder}
             <AddCard
               cardListId={props.cardList.pk}
-              idToken={props.idToken}
+              idToken={props.user.idToken}
               setBoardState={props.setBoardState}
               nextPosition={props.cards.length}
             />

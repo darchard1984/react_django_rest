@@ -1,8 +1,8 @@
-import { CardList } from '../AddCardList/types'
+import { Card } from '../AddCard/types'
 
-export type EditCardListFormProps = {
+export type EditCardFormProps = {
   display: boolean
-  cardList: CardList
+  card: Card
   idToken: string
   setShowEditFormState: (state: boolean) => void
   setBoardState: (idToken: string) => void

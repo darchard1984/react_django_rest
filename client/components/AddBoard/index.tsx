@@ -2,12 +2,11 @@ import { AddBoardPanelProps, AddBoardState, Board } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
-  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
   IconButton,
-  Textarea,
+  Input,
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
@@ -78,9 +77,11 @@ export class AddBoard extends React.Component<
         mr="4"
         mb="4"
         width="200px"
-        minHeight="150px"
+        minHeight={this.state.showForm ? '0px' : '100px'}
       >
         <IconButton
+          background="lighterGrey"
+          _hover={{ background: 'lightGrey' }}
           display={this.state.showForm ? 'none' : 'block'}
           aria-label="add a new board"
           icon={<AddIcon />}
@@ -112,6 +113,19 @@ export class AddBoard extends React.Component<
                         borderRadius=".3rem"
                         padding="4"
                       >
+                        <Input
+                          {...field}
+                          id="board-title"
+                          isRequired={true}
+                          fontSize="sm"
+                          variant="flushed"
+                          padding="0"
+                          maxLength="50"
+                          mb="4"
+                        />
+                        <FormErrorMessage fontSize="xs" mb="4">
+                          {form.errors.boardTitle}
+                        </FormErrorMessage>
                         <Flex justifyContent="flex-end" width="100%">
                           <IconButton
                             icon={<CloseIcon />}
@@ -119,34 +133,19 @@ export class AddBoard extends React.Component<
                             size="xs"
                             onClick={this.handlePanelInputClose}
                           />
+                          <Button
+                            type="submit"
+                            variant="outline"
+                            ml="4"
+                            size="xs"
+                            alignSelf="flex-end"
+                            colorScheme="blue"
+                            isLoading={form.isSubmitting}
+                            isDisabled={!form.values.boardTitle}
+                          >
+                            Add
+                          </Button>
                         </Flex>
-                        <Divider mt="2" mb="2" />
-                        <Textarea
-                          {...field}
-                          id="board-title"
-                          isRequired={true}
-                          fontSize="sm"
-                          resize="none"
-                          variant=""
-                          padding="0"
-                          maxLength="50"
-                        />
-
-                        <FormErrorMessage fontSize="xs" mb="4">
-                          {form.errors.boardTitle}
-                        </FormErrorMessage>
-                        <Button
-                          type="submit"
-                          variant="outline"
-                          ml={['4', '8']}
-                          size="xs"
-                          alignSelf="flex-end"
-                          colorScheme="blue"
-                          isLoading={form.isSubmitting}
-                          isDisabled={!form.values.boardTitle}
-                        >
-                          Add
-                        </Button>
                       </Flex>
                     </FormControl>
                   )}

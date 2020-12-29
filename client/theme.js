@@ -24,8 +24,10 @@ const myTheme = {
     ...theme.colors,
     lightGrey: '#e0e0e0',
     lighterGrey: '#f5f5f5',
-    boardBackground: '#000',
+    boardPanelBackground: '#b5b5b5',
+    cardBackground: '#000',
     errorRed: '#ff00002b',
+    mask: '#0000007a',
   },
 }
 

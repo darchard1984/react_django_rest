@@ -23,6 +23,7 @@
     "react": "17.0.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "17.0.1",
+    "react-icons": "^4.1.0",
     "yarn": "^1.22.10",
     "yup": "^0.30.0"
   },

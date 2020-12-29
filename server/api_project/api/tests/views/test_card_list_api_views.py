@@ -86,7 +86,7 @@ class TestPutCardList(TestCase):
         self.get_delete_update_endpoint = reverse(
             'get_delete_update_card_list', kwargs={'pk': self.card_list.pk}
         )
-        self.valid_data = {'title': 'New title'}
+        self.valid_data = {'data': {'title': 'New title'}}
 
         self.invalid_data = {'this_is_invalid': 'bar'}
 
@@ -101,7 +101,7 @@ class TestPutCardList(TestCase):
         updated_title = CardList.objects.get(pk=self.card_list.pk).title
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(updated_title, self.valid_data.get('title'))
+        self.assertEqual(updated_title, self.valid_data['data']['title'])
 
     def test_invalid_card_list_update(self):
         r = self.client.put(

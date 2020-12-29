@@ -1,16 +1,19 @@
 import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import { Divider, Flex, Text } from '@chakra-ui/react'
+import React, { useState } from 'react'
 
 import ApiClient from '../../services/api'
-import BoardPanelIcon from '../BoardPanelIcon'
 import { BoardPanelProps } from '../BoardPanel/types'
-import React from 'react'
+import EditBoardForm from '../EditBoardForm'
+import { FaEdit } from 'react-icons/fa'
+import PanelIcon from '../PanelIcon'
 import { useRouter } from 'next/router'
 
 const BoardPanel: React.FC<BoardPanelProps> = (props) => {
   const router = useRouter()
+  const [showEditForm, _setShowEditForm] = useState(false)
 
-  const _handleBoardClose = async (boardId: number) => {
+  const _handleBoardDelete = async (boardId: number) => {
     const client = new ApiClient()
 
     const resp = await client.delete(
@@ -30,11 +33,15 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
     router.push(`/board/${boardId}/`)
   }
 
+  const _handleBoardEdit = (boardId: number) => {
+    _setShowEditForm(true)
+  }
+
   return (
     <Flex
       mt="8"
       ml="4"
-      mr="4"
+      mr="2"
       mb="4"
       width="200px"
       justifyContent="flex-start"
@@ -44,26 +51,40 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
       borderRadius=".3rem"
       padding="4"
       wordBreak="break-word"
-      background="boardBackground"
+      background="lightGrey"
     >
       <Flex justifyContent="flex-end" width="100%">
-        <BoardPanelIcon
+        <PanelIcon
           icon={<ExternalLinkIcon />}
-          ariaLabel="board link"
+          ariaLabel="go to board"
           onIconClick={_handleBoardLink}
-          boardId={props.board.pk}
+          pk={props.board.pk}
         />
-        <BoardPanelIcon
+        <PanelIcon
+          icon={<FaEdit />}
+          ariaLabel="edit board"
+          onIconClick={_handleBoardEdit}
+          pk={props.board.pk}
+        />
+        <PanelIcon
           icon={<CloseIcon />}
           ariaLabel="close board"
-          onIconClick={_handleBoardClose}
-          boardId={props.board.pk}
+          onIconClick={_handleBoardDelete}
+          pk={props.board.pk}
         />
       </Flex>
-      <Divider mt="2" mb="2" color="#fff" />
-      <Text as="span" color="#fff">
+      <Divider mt="2" mb="2" />
+      <Text as="span" fontWeight="bold">
         {props.board.title}
       </Text>
+      <EditBoardForm
+        display={showEditForm}
+        board={props.board}
+        user={props.user}
+        setShowEditFormState={_setShowEditForm}
+        setBoardsState={props.setBoardsState}
+        setErrorState={props.setErrorState}
+      />
     </Flex>
   )
 }

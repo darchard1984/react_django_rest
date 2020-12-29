@@ -5,6 +5,7 @@ import {
   Box,
   Flex,
   Heading,
+  IconButton,
   Spinner,
 } from '@chakra-ui/react'
 import { BoardProps, BoardState } from './types'
@@ -18,6 +19,7 @@ import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
+import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { DropResult } from 'react-beautiful-dnd'
 import React from 'react'
 import { withRouter } from 'next/router'
@@ -73,6 +75,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         return
       }
 
+      if (!authenticated.data.boards.length) return this.props.router.push('/')
+
       const idToken = await currentUser.getIdToken()
       this.setState({
         user: {
@@ -111,7 +115,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
 
     this.setState({
       board: board.data,
-      cardLists: cardLists || [],
+      cardLists: cardLists.sort((a, b) => a.pk - b.pk) || [],
       cards: allCards,
     })
   }
@@ -121,7 +125,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     boardId: string
   ): Promise<AxiosResponse<Board>> {
     const resp: AxiosResponse<Board> = await this.client.get(
-      `/board/${boardId}`,
+      `/board/${boardId}/`,
       {
         headers: this.client.setAuthHeader(idToken),
       }
@@ -267,11 +271,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       return []
     }
 
-    return this.sortCardsByPosition(allCards[0])
-  }
-
-  private sortCardsByPosition(cards: Card[]) {
-    return cards.sort((a, b) => a.position - b.position)
+    return allCards[0].sort((a, b) => a.position - b.position)
   }
 
   render() {
@@ -301,14 +301,22 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           width="100%"
           display={!this.state.showSpinner ? 'flex' : 'none'}
         >
+          <Flex justifyContent="flex-start" alignItems="center" mt="8" ml="4">
+            <IconButton
+              mr="4"
+              icon={<ChevronLeftIcon />}
+              aria-label={'Back'}
+              onClick={() => this.props.router.push('/')}
+              background="lighterGrey"
+              _hover={{ background: 'lightGrey' }}
+            />
+          </Flex>
+
           <Heading
             as="h1"
             fontSize="lg"
-            mt="8"
-            ml="4"
-            mb="4"
+            m="4"
             pb="4"
-            maxWidth="50%"
             wordBreak="break-word"
             borderBottom="1px solid #c5c1c1c9"
           >
@@ -329,8 +337,9 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                   <CardListPanel
                     cardList={cardList}
                     cards={this.filterCards(cardList.pk)}
-                    idToken={this.state.user.idToken}
+                    user={this.state.user}
                     setBoardState={this.setBoardState.bind(this)}
+                    setErrorState={this.setRequestErrorState.bind(this)}
                     key={cardList.pk}
                   />
                 ))}

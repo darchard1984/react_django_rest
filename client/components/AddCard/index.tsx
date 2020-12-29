@@ -100,7 +100,8 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
             icon={<AddIcon />}
             onClick={this.toggleForm}
             size="xs"
-            background="white"
+            background="lighterGrey"
+            _hover={{ background: 'lightGrey' }}
           />
         </Flex>
 

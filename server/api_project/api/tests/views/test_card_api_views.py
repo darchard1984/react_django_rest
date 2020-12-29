@@ -14,7 +14,8 @@ from ...serializers import CardSerializer
 @pytest.fixture(scope='module', autouse=True)
 def patch_authentication():
     with patch(
-        'firebase_auth.firebase_authentication.FirebaseAuthentication.authenticate',
+        'firebase_auth.firebase_authentication.FirebaseAuthentication'
+        '.authenticate',
         return_value=(Mock(), None)
     ):
         yield
@@ -80,11 +81,11 @@ class TestPutCard(TestCase):
             'get_delete_update_card', kwargs={'pk': self.card.pk}
         )
 
-        self.valid_data = {
+        self.valid_data = {'data': {
             'title': 'New title',
             'description': 'New description',
             'position': 1
-        }
+        }}
 
         self.invalid_data = {'this_is_invalid': 'bar'}
 
@@ -99,7 +100,7 @@ class TestPutCard(TestCase):
         updated_title = Card.objects.get(pk=self.card.pk).title
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(updated_title, self.valid_data.get('title'))
+        self.assertEqual(updated_title, self.valid_data['data']['title'])
 
     def test_invalid_card_update(self):
         r = self.client.put(

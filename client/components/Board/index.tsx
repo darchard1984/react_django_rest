@@ -116,7 +116,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
 
     this.setState({
       board: board.data,
-      cardLists: cardLists || [],
+      cardLists: cardLists.sort((a, b) => a.pk - b.pk) || [],
       cards: allCards,
     })
   }

@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { BoardProps, BoardState } from './types'
 import { DragDropContext, DraggableLocation } from 'react-beautiful-dnd'
-import authenticate, { signIn } from '../../lib/authenticate'
+import authenticate, { signIn } from '../../services/Authenticate'
 
 import AddCardList from '../AddCardList'
 import ApiClient from '../../services/ApiClient'

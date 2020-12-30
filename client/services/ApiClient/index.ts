@@ -1,9 +1,4 @@
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  Method,
-} from 'axios'
+import axios, { AxiosInstance, Method } from 'axios'
 
 class ApiClientError extends Error {
   constructor(message?: string) {
@@ -22,20 +17,6 @@ class ApiClient {
     })
   }
 
-  private _handleError(error: any): void {
-    if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
-      // TODO: Send to Sentry
-    } else {
-      console.log(error)
-    }
-  }
-
-  setAuthHeader(token: string) {
-    return {
-      Authorization: `Bearer ${token}`,
-    }
-  }
-
   async request(
     method: Method,
     url: string,
@@ -49,7 +30,7 @@ class ApiClient {
       if (!['GET', 'DELETE', 'PUT', 'POST'].includes(method)) {
         throw Error('Method not supported')
       }
-      console.log(config)
+
       const resp = await this.api.request({
         method,
         url,
@@ -60,8 +41,22 @@ class ApiClient {
       return resp
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
-      this._handleError(e)
+      this.handleError(e)
       if (onError) onError()
+    }
+  }
+
+  private handleError(error: any): void {
+    if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
+      // TODO: Send to Sentry
+    } else {
+      console.log(error)
+    }
+  }
+
+  setAuthHeader(token: string) {
+    return {
+      Authorization: `Bearer ${token}`,
     }
   }
 }

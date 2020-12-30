@@ -7,7 +7,7 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react'
-import authenticate, { getUser, signIn } from '../../lib/authenticate'
+import authenticate, { signIn } from '../../services/Authenticate'
 
 import AddBoard from '../AddBoard'
 import ApiClient from '../../services/ApiClient'
@@ -17,6 +17,7 @@ import BoardPanel from '../BoardPanel'
 import BoardTitleForm from '../BoardTitleForm'
 import { HomeState } from './types'
 import React from 'react'
+import getUser from '../../services/User'
 
 class Home extends React.Component<any, HomeState> {
   client = new ApiClient()

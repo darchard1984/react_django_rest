@@ -79,7 +79,7 @@ class TestPutBoard(TestCase):
             'get_delete_update_board', kwargs={'pk': self.board.pk}
         )
 
-        self.valid_data = {'data': {'title': 'New title'}}
+        self.valid_data = {'title': 'New title'}
 
         self.invalid_data = {'this_is_invalid': 'bar'}
 
@@ -94,7 +94,7 @@ class TestPutBoard(TestCase):
         updated_title = Board.objects.get(pk=self.board.pk).title
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(updated_title, self.valid_data['data']['title'])
+        self.assertEqual(updated_title, self.valid_data['title'])
 
     def test_invalid_board_update(self):
         r = self.client.put(
@@ -121,12 +121,12 @@ class TestCreateBoard(TestCase):
     def test_create_board(self):
         r = self.client.post(
             self.create_board_endpoint,
-            data=json.dumps({
-                'data': {
+            data=json.dumps(
+                {
                     'title': self.board_title,
                     'user': self.user.pk
                 }
-            }),
+            ),
             content_type='application/json'
         )
 

@@ -10,7 +10,7 @@ import {
 import authenticate, { getUser, signIn } from '../../lib/authenticate'
 
 import AddBoard from '../AddBoard'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
@@ -87,7 +87,8 @@ class Home extends React.Component<any, HomeState> {
       return
     }
 
-    const resp: AxiosResponse<Board[]> = await this.client.get(
+    const resp: AxiosResponse<Board[]> = await this.client.request(
+      'GET',
       `/boards/?pks=${userResp.boards.join(',')}`,
       {
         headers: this.client.setAuthHeader(this.state.user.idToken),

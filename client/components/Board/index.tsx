@@ -13,7 +13,7 @@ import { DragDropContext, DraggableLocation } from 'react-beautiful-dnd'
 import authenticate, { signIn } from '../../lib/authenticate'
 
 import AddCardList from '../AddCardList'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
@@ -115,7 +115,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
 
     this.setState({
       board: board.data,
-      cardLists: cardLists.sort((a, b) => a.pk - b.pk) || [],
+      cardLists: cardLists?.sort((a, b) => a.pk - b.pk) || [],
       cards: allCards,
     })
   }
@@ -124,11 +124,13 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     idToken: string,
     boardId: string
   ): Promise<AxiosResponse<Board>> {
-    const resp: AxiosResponse<Board> = await this.client.get(
+    const resp: AxiosResponse<Board> = await this.client.request(
+      'GET',
       `/board/${boardId}/`,
       {
         headers: this.client.setAuthHeader(idToken),
-      }
+      },
+      this.setRequestErrorState.bind(this)
     )
 
     return resp
@@ -139,20 +141,24 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     idToken: string
   ): Promise<AxiosResponse<CardList[]>> {
     const lists = cardListIds.join(',')
-    const resp: AxiosResponse<CardList[]> = await this.client.get(
+    const resp: AxiosResponse<CardList[]> = await this.client.request(
+      'GET',
       `/card-lists/?pks=${lists}`,
       {
         headers: this.client.setAuthHeader(idToken),
-      }
+      },
+      this.setRequestErrorState.bind(this)
     )
 
     return resp
   }
 
   async getCardList(cardListId: number): Promise<AxiosResponse<CardList>> {
-    const resp: AxiosResponse<CardList> = await this.client.get(
+    const resp: AxiosResponse<CardList> = await this.client.request(
+      'GET',
       `/card-list/${cardListId}/`,
-      { headers: this.client.setAuthHeader(this.state.user.idToken) }
+      { headers: this.client.setAuthHeader(this.state.user.idToken) },
+      this.setRequestErrorState.bind(this)
     )
 
     return resp
@@ -163,11 +169,13 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     idToken: string
   ): Promise<AxiosResponse<Card[]>> {
     const ids = cardIds.join(',')
-    const resp: AxiosResponse<Card[]> = await this.client.get(
+    const resp: AxiosResponse<Card[]> = await this.client.request(
+      'GET',
       `/cards/?pks=${ids}`,
       {
         headers: this.client.setAuthHeader(idToken),
-      }
+      },
+      this.setRequestErrorState.bind(this)
     )
 
     return resp
@@ -244,10 +252,14 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
   }
 
   async updateCards(cards: Card[]) {
-    await this.client.put(
+    await this.client.request(
+      'PUT',
       '/cards/update/',
-      { data: cards },
-      { headers: this.client.setAuthHeader(this.state.user.idToken) },
+      {
+        headers: this.client.setAuthHeader(this.state.user.idToken),
+        data: { cards },
+      },
+
       this.setRequestErrorState.bind(this)
     )
   }

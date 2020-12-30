@@ -2,7 +2,7 @@ import { CloseIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import { Divider, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { BoardPanelProps } from '../BoardPanel/types'
 import EditBoardForm from '../EditBoardForm'
 import { FaEdit } from 'react-icons/fa'
@@ -16,7 +16,8 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
   const _handleBoardDelete = async (boardId: number) => {
     const client = new ApiClient()
 
-    const resp = await client.delete(
+    const resp = await client.request(
+      'DELETE',
       `/board/${boardId}/`,
       {
         headers: client.setAuthHeader(`${props.user.idToken}`),
@@ -39,10 +40,8 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
 
   return (
     <Flex
-      mt="8"
-      ml="4"
-      mr="2"
-      mb="4"
+      my="2"
+      mx="4"
       width="200px"
       justifyContent="flex-start"
       alignItems="flex-start"

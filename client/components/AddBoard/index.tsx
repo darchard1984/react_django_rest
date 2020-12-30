@@ -11,7 +11,7 @@ import {
 import { Field, Form, Formik } from 'formik'
 
 import AddBoardPanelSchema from './schema'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import React from 'react'
 
@@ -44,12 +44,13 @@ export class AddBoard extends React.Component<
     setSubmitting(true)
     const { boardTitle } = AddBoardPanelSchema.cast({ ...values })
 
-    const resp: AxiosResponse<Board> = await this.client.post(
+    const resp: AxiosResponse<Board> = await this.client.request(
+      'POST',
       '/board/',
       {
         data: { title: boardTitle, user: this.props.user.pk },
+        headers: this.client.setAuthHeader(this.props.user.idToken),
       },
-      { headers: this.client.setAuthHeader(this.props.user.idToken) },
       () =>
         setErrors({
           boardTitle: 'Something went wrong, could not save your board.',

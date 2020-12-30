@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { CloseIcon } from '@chakra-ui/icons'
 import { EditCardFormProps } from './types'
@@ -34,7 +34,8 @@ const EditCardForm: React.FC<EditCardFormProps> = (props) => {
     })
     setSubmitting(true)
 
-    const resp: AxiosResponse = await client.put(
+    const resp: AxiosResponse = await client.request(
+      'PUT',
       `/card/${props.card.pk}/`,
       {
         data: {
@@ -43,8 +44,8 @@ const EditCardForm: React.FC<EditCardFormProps> = (props) => {
           position: props.card.position,
           card_list: props.card.card_list,
         },
+        headers: client.setAuthHeader(props.idToken),
       },
-      { headers: client.setAuthHeader(props.idToken) },
       () =>
         setErrors({
           cardTitle: 'Something went wrong, could not update your  card.',

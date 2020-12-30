@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { CardComponentProps } from './types'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Draggable } from 'react-beautiful-dnd'
@@ -15,7 +15,8 @@ const CardComponent: React.FC<CardComponentProps> = (props) => {
   const _handleCardDelete = async (cardId: number) => {
     const client = new ApiClient()
 
-    const resp = await client.delete(
+    const resp = await client.request(
+      'DELETE',
       `/card/${cardId}/`,
       {
         headers: client.setAuthHeader(`${props.idToken}`),

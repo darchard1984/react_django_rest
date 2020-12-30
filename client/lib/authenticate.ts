@@ -1,4 +1,4 @@
-import ApiClient from '../services/api'
+import ApiClient from '../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { UserResponse } from '../components/Home/types'
 import auth from './firebase'
@@ -8,42 +8,43 @@ const client = new ApiClient()
 
 export default async function authenticate(
   currentUser: firebase.User,
-  callback: () => void
+  onError?: () => void
 ) {
   const idToken = await currentUser.getIdToken()
 
-  const resp: AxiosResponse<UserResponse> = await client.get(
+  const resp: AxiosResponse<UserResponse> = await client.request(
+    'GET',
     '/authenticate/',
     {
       headers: client.setAuthHeader(idToken),
     },
-    callback
+    onError
   )
   return resp
 }
 
-export async function signIn(callback?: () => void): Promise<firebase.User> {
+export async function signIn(onError?: () => void): Promise<firebase.User> {
   try {
     await auth.signInAnonymously()
     return auth.currentUser
   } catch (e) {
-    if (callback) callback()
+    if (onError) onError()
   }
 }
 
 export async function getUser(
   userId: number,
   idToken: string,
-  callback?: () => void
+  onError: () => void
 ): Promise<UserResponse> {
-  const resp: AxiosResponse<UserResponse> = await client.get(
+  const resp: AxiosResponse<UserResponse> = await client.request(
+    'GET',
     `/user/${userId}/`,
     {
       headers: client.setAuthHeader(idToken),
     },
-    callback
+    onError
   )
 
-  const user = resp?.data
-  return user
+  return resp.data
 }

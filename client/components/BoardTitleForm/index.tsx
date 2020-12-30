@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { BoardTitleFormProps } from './types'
 import BoardTitleFormSchema from './schema'
 import React from 'react'
@@ -23,12 +23,13 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
     setSubmitting(true)
     const { boardTitle } = BoardTitleFormSchema.cast({ ...values })
 
-    const resp = await client.post(
+    const resp = await client.request(
+      'POST',
       '/board/',
       {
         data: { title: boardTitle, user: props.user.pk },
+        headers: client.setAuthHeader(props.user.idToken),
       },
-      { headers: client.setAuthHeader(props.user.idToken) },
       () =>
         setErrors({
           boardTitle:

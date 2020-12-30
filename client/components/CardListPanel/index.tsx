@@ -2,9 +2,9 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
 import AddCard from '../AddCard'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { Card } from '../AddCard/types'
-import CardComponent from '../Card'
+import CardComponent from '../CardPanel'
 import { CardListPanelProps } from './types'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Droppable } from 'react-beautiful-dnd'
@@ -33,7 +33,8 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
   const _handleCardListDelete = async (cardListId: number) => {
     const client = new ApiClient()
 
-    const resp = await client.delete(
+    const resp = await client.request(
+      'DELETE',
       `/card-list/${cardListId}/`,
       {
         headers: client.setAuthHeader(`${props.user.idToken}`),

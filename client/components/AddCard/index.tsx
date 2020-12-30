@@ -14,7 +14,7 @@ import {
 import { Field, Form, Formik } from 'formik'
 
 import AddCardSchema from './schema'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import React from 'react'
 
@@ -46,7 +46,8 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
     setSubmitting(true)
     const { cardTitle, cardDescription } = AddCardSchema.cast({ ...values })
 
-    const resp: AxiosResponse<Card> = await this.client.post(
+    const resp: AxiosResponse<Card> = await this.client.request(
+      'POST',
       '/card/',
       {
         data: {
@@ -55,8 +56,8 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
           position: this.props.nextPosition,
           card_list: this.props.cardListId,
         },
+        headers: this.client.setAuthHeader(this.props.idToken),
       },
-      { headers: this.client.setAuthHeader(this.props.idToken) },
       () =>
         setErrors({
           listTitle: 'Something went wrong, could not save your list.',

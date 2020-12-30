@@ -42,7 +42,7 @@ class Home extends React.Component<any, HomeState> {
 
   async componentDidMount() {
     if (!this.state.user.pk) {
-      let currentUser = await signIn(this.setRequestErrorState.bind(this))
+      let currentUser = await signIn()
 
       if (!currentUser) return
 

@@ -37,10 +37,6 @@ class ApiClient implements IApiClient {
     onError?: () => void
   ): Promise<AxiosResponse> {
     try {
-      if (!['GET', 'DELETE', 'PUT', 'POST'].includes(method)) {
-        throw Error('Method not supported')
-      }
-
       const resp = await this.api.request({
         method,
         url,
@@ -59,7 +55,7 @@ class ApiClient implements IApiClient {
   private handleError(error: any): void {
     if (process.env.NEXT_PUBLIC_APP_STAGE === 'prod') {
       // TODO: Send to Sentry
-    } else {
+    } else if (process.env.NEXT_PUBLIC_APP_STAGE === 'dev') {
       console.log(error)
     }
   }

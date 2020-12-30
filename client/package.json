@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint --ext .ts,.tsx",
     "type": "tsc",
-    "test": "jest"
+    "test": "NEXT_PUBLIC_APP_STAGE=testing jest"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.0",

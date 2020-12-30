@@ -2,18 +2,17 @@ import authenticate, { signIn } from '.'
 
 import ApiClient from '../ApiClient'
 import firebase from 'firebase/app'
-import { mocked } from 'ts-jest/utils'
 
 jest.mock('../ApiClient')
 jest.mock('firebase/app')
 
 describe('Authenticate.authenticate', () => {
   beforeEach(() => {
-    mocked(ApiClient).mockClear()
+    jest.clearAllMocks()
   })
 
   afterEach(() => {
-    mocked(ApiClient).mockRestore()
+    jest.restoreAllMocks()
   })
 
   it('calls ApiClient with correct args', async () => {

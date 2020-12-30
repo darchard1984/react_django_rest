@@ -6,8 +6,9 @@ export default async function getUser(
   userId: number,
   idToken: string,
   onError: () => void
-): Promise<UserResponse> {
+): Promise<UserResponse | undefined> {
   const client = new ApiClient()
+
   const resp: AxiosResponse<UserResponse> = await client.request(
     'GET',
     `/user/${userId}/`,
@@ -17,5 +18,5 @@ export default async function getUser(
     onError
   )
 
-  return resp.data
+  return resp?.data
 }

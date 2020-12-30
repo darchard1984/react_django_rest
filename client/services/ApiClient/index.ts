@@ -1,6 +1,6 @@
-import axios, { AxiosInstance, Method } from 'axios'
+import axios, { AxiosInstance, AxiosResponse, Method } from 'axios'
 
-class ApiClientError extends Error {
+export class ApiClientError extends Error {
   constructor(message?: string) {
     super(message)
     this.name = 'ApiClientError'
@@ -8,7 +8,17 @@ class ApiClientError extends Error {
   }
 }
 
-class ApiClient {
+export interface IApiClient {
+  api: AxiosInstance
+  request: (
+    method: string,
+    url: string,
+    config: { headers?: any; data?: any }
+  ) => Promise<AxiosResponse>
+  setAuthHeader: (idToken: string) => void
+}
+
+class ApiClient implements IApiClient {
   api: AxiosInstance
   constructor() {
     this.api = axios.create({
@@ -25,7 +35,7 @@ class ApiClient {
       data?: any
     },
     onError?: () => void
-  ) {
+  ): Promise<AxiosResponse> {
     try {
       if (!['GET', 'DELETE', 'PUT', 'POST'].includes(method)) {
         throw Error('Method not supported')

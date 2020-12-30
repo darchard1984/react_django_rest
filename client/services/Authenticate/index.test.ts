@@ -1,10 +1,13 @@
+import authenticate, { signIn } from '.'
+
 import ApiClient from '../ApiClient'
-import getUser from '.'
-import { mocked } from 'ts-jest'
+import firebase from 'firebase/app'
+import { mocked } from 'ts-jest/utils'
 
 jest.mock('../ApiClient')
+jest.mock('firebase/app')
 
-describe('getUser', () => {
+describe('Authenticate.authenticate', () => {
   beforeEach(() => {
     mocked(ApiClient).mockClear()
   })
@@ -17,13 +20,17 @@ describe('getUser', () => {
     ApiClient.prototype.setAuthHeader = jest
       .fn()
       .mockReturnValue({ Authorization: 'Bearer foo' })
+
+    const mockCurrentUser = {
+      getIdToken: () => {},
+    } as firebase.User
     const mockOnError = () => {}
 
-    await getUser(1, 'mockToken', mockOnError)
+    await authenticate(mockCurrentUser, mockOnError)
 
     expect(ApiClient.prototype.request).toHaveBeenCalledWith(
       'GET',
-      '/user/1/',
+      '/authenticate/',
       {
         headers: { Authorization: 'Bearer foo' },
       },

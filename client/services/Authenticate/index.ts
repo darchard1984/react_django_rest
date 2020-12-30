@@ -22,11 +22,7 @@ export default async function authenticate(
   return resp
 }
 
-export async function signIn(onError?: () => void): Promise<firebase.User> {
-  try {
-    await auth.signInAnonymously()
-    return auth.currentUser
-  } catch (e) {
-    if (onError) onError()
-  }
+export async function signIn(): Promise<firebase.User> {
+  await auth.signInAnonymously()
+  return auth.currentUser
 }

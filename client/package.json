@@ -56,11 +56,5 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged && yarn lint && yarn type"
     }
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
   }
 }

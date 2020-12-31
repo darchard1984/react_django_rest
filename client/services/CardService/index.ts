@@ -1,15 +1,9 @@
-import ApiClient from '../ApiClient'
 import { Card } from '../../components/AddCard/types'
 import { CardList } from '../../components/AddCardList/types'
 import { DraggableLocation } from 'react-beautiful-dnd'
 
 export default class CardService {
-  client: ApiClient
-  constructor() {
-    this.client = new ApiClient()
-  }
-
-  filterCardsByCardListId(cardListId: number, cards: Card[][]): Card[] {
+  filterCardsByCardListId(cardListId: number, cards: Card[][]): Card[] | [] {
     const allCards = (cards.filter((cards: Card[]) => {
       if (cards.length) return cards[0].card_list === cardListId
     }) as unknown) as Card[][]
@@ -20,7 +14,10 @@ export default class CardService {
     return allCards[0].sort((a, b) => a.position - b.position)
   }
 
-  getCardsByDraggableLocationId(cards: Card[][], locationId: string) {
+  getCardsByDraggableLocationId(
+    locationId: string,
+    cards: Card[][]
+  ): Card[] | [] {
     return (
       cards.filter((cards) => {
         if (cards.length) {
@@ -41,12 +38,13 @@ export default class CardService {
     const allCardsCopy = JSON.parse(JSON.stringify(cards))
     const allCardListsCopy = JSON.parse(JSON.stringify(cardLists))
 
-    const sourceCards = this.getCardsByDraggableLocationId(
-      allCardsCopy,
-      source.droppableId
+    const cardsFromSourceList = this.getCardsByDraggableLocationId(
+      source.droppableId,
+      allCardsCopy
     )
-    const sourceCard = sourceCards.splice(source.index, 1)
-    let destCards: Card[] = []
+
+    const sourceCard = cardsFromSourceList.splice(source.index, 1)
+    let cardsFromDestList: Card[] = []
 
     if (destination.droppableId !== source.droppableId) {
       const sourceCardList = allCardListsCopy.filter(
@@ -65,23 +63,28 @@ export default class CardService {
       sourceCard[0].card_list = parseInt(destination.droppableId)
 
       // Update cards
-      destCards = this.getCardsByDraggableLocationId(
-        allCardsCopy,
-        destination.droppableId
+      cardsFromDestList = this.getCardsByDraggableLocationId(
+        destination.droppableId,
+        allCardsCopy
       )
 
-      const destListHadNoCards = destCards.length ? false : true
+      const destListHadNoCards = cardsFromDestList.length ? false : true
 
-      destCards.splice(destination.index, 0, sourceCard[0])
-      destCards.forEach((card, index) => (card.position = index))
-      sourceCards.forEach((card, index) => (card.position = index))
+      cardsFromDestList.splice(destination.index, 0, sourceCard[0])
+      cardsFromDestList.forEach((card, index) => (card.position = index))
+      cardsFromSourceList.forEach((card, index) => (card.position = index))
 
-      if (destListHadNoCards) allCardsCopy.push(destCards)
+      if (destListHadNoCards) allCardsCopy.push(cardsFromDestList)
     } else {
-      sourceCards.splice(destination.index, 0, sourceCard[0])
-      sourceCards.forEach((card, index) => (card.position = index))
+      cardsFromSourceList.splice(destination.index, 0, sourceCard[0])
+      cardsFromSourceList.forEach((card, index) => (card.position = index))
     }
 
-    return [allCardsCopy, allCardListsCopy, sourceCards, destCards]
+    return [
+      allCardsCopy,
+      allCardListsCopy,
+      cardsFromSourceList,
+      cardsFromDestList,
+    ]
   }
 }

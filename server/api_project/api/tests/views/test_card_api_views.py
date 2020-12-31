@@ -81,11 +81,11 @@ class TestPutCard(TestCase):
             'get_delete_update_card', kwargs={'pk': self.card.pk}
         )
 
-        self.valid_data = {'data': {
+        self.valid_data = {
             'title': 'New title',
             'description': 'New description',
             'position': 1
-        }}
+        }
 
         self.invalid_data = {'this_is_invalid': 'bar'}
 
@@ -100,7 +100,7 @@ class TestPutCard(TestCase):
         updated_title = Card.objects.get(pk=self.card.pk).title
 
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(updated_title, self.valid_data['data']['title'])
+        self.assertEqual(updated_title, self.valid_data['title'])
 
     def test_invalid_card_update(self):
         r = self.client.put(
@@ -130,13 +130,12 @@ class TestCreateCard(TestCase):
             self.create_card_endpoint,
             data=json.dumps(
                 {
-                    'data': {
-                        'title': self.card_title,
-                        'description': self.card_description,
-                        'position': self.position,
-                        'card_list': self.card_list.pk
-                    }
+                    'title': self.card_title,
+                    'description': self.card_description,
+                    'position': self.position,
+                    'card_list': self.card_list.pk
                 }
+
             ),
             content_type='application/json'
         )

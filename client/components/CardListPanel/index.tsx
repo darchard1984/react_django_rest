@@ -2,10 +2,10 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
 import AddCard from '../AddCard'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { Card } from '../AddCard/types'
-import CardComponent from '../Card'
 import { CardListPanelProps } from './types'
+import CardPanel from '../CardPanel'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Droppable } from 'react-beautiful-dnd'
 import EditCardListForm from '../EditCardListForm'
@@ -15,11 +15,11 @@ import PanelIcon from '../PanelIcon'
 const CardListPanel: React.FC<CardListPanelProps> = (props) => {
   const [showEditForm, _setShowEditForm] = useState(false)
 
-  const _renderCards = (props: CardListPanelProps) => {
+  const _generateCardsForList = (props: CardListPanelProps) => {
     const cards = props.cards as Card[]
     return cards.map((card, index) => (
       <Box key={card.pk}>
-        <CardComponent
+        <CardPanel
           card={card}
           index={index}
           idToken={props.user.idToken}
@@ -30,10 +30,11 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
     ))
   }
 
-  const _handleCardListDelete = async (cardListId: number) => {
+  const _deleteCardList = async (cardListId: number) => {
     const client = new ApiClient()
 
-    const resp = await client.delete(
+    const resp = await client.request(
+      'DELETE',
       `/card-list/${cardListId}/`,
       {
         headers: client.setAuthHeader(`${props.user.idToken}`),
@@ -46,7 +47,7 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
     }
   }
 
-  const _handleCardListEdit = (cardListId: number) => {
+  const _editCardList = (cardListId: number) => {
     _setShowEditForm(true)
   }
 
@@ -77,13 +78,13 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
         </Text>
         <Flex>
           <PanelIcon
-            onIconClick={_handleCardListEdit}
+            onIconClick={_editCardList}
             pk={props.cardList.pk}
             icon={<FaEdit />}
             ariaLabel="Edit card list"
           />
           <PanelIcon
-            onIconClick={_handleCardListDelete}
+            onIconClick={_deleteCardList}
             pk={props.cardList.pk}
             icon={<CloseIcon />}
             ariaLabel="Delete card list"
@@ -105,7 +106,7 @@ const CardListPanel: React.FC<CardListPanelProps> = (props) => {
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {_renderCards(props)}
+            {_generateCardsForList(props)}
             {provided.placeholder}
             <AddCard
               cardListId={props.cardList.pk}

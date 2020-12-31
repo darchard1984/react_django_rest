@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { CloseIcon } from '@chakra-ui/icons'
 import EditCardListFormPanelSchema from './schema'
@@ -23,7 +23,7 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     props.setShowEditFormState(false)
   }
 
-  const _handleSumbit = async (
+  const _updateCardList = async (
     values: { listTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -31,12 +31,16 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     const { listTitle } = EditCardListFormPanelSchema.cast({ ...values })
     setSubmitting(true)
 
-    const resp: AxiosResponse = await client.put(
+    const resp: AxiosResponse = await client.request(
+      'PUT',
       `/card-list/${props.cardList.pk}/`,
       {
-        data: { title: listTitle, board: props.cardList.board },
+        data: {
+          title: listTitle,
+          board: props.cardList.board,
+        },
+        headers: client.setAuthHeader(props.idToken),
       },
-      { headers: client.setAuthHeader(props.idToken) },
       () =>
         setErrors({
           listTitle: 'Something went wrong, could not update your list.',
@@ -55,7 +59,7 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     <EditPanel display={props.display}>
       <Formik
         initialValues={{ listTitle: props.cardList.title }}
-        onSubmit={_handleSumbit}
+        onSubmit={_updateCardList}
         validationSchema={EditCardListFormPanelSchema}
         enableReinitialize={true}
       >

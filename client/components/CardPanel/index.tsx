@@ -1,21 +1,22 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
-import ApiClient from '../../services/api'
-import { CardComponentProps } from './types'
+import ApiClient from '../../services/ApiClient'
+import { CardPanelProps } from './types'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Draggable } from 'react-beautiful-dnd'
 import EditCardForm from '../EditCardForm'
 import { FaEdit } from 'react-icons/fa'
 import PanelIcon from '../PanelIcon'
 
-const CardComponent: React.FC<CardComponentProps> = (props) => {
+const CardPanel: React.FC<CardPanelProps> = (props) => {
   const [showEditForm, _setShowEditFormState] = useState(false)
 
-  const _handleCardDelete = async (cardId: number) => {
+  const _deleteCard = async (cardId: number) => {
     const client = new ApiClient()
 
-    const resp = await client.delete(
+    const resp = await client.request(
+      'DELETE',
       `/card/${cardId}/`,
       {
         headers: client.setAuthHeader(`${props.idToken}`),
@@ -67,7 +68,7 @@ const CardComponent: React.FC<CardComponentProps> = (props) => {
                   _hover={{ background: '#000' }}
                 />
                 <PanelIcon
-                  onIconClick={_handleCardDelete}
+                  onIconClick={_deleteCard}
                   pk={props.card.pk}
                   icon={<CloseIcon />}
                   ariaLabel="Delete card"
@@ -94,4 +95,4 @@ const CardComponent: React.FC<CardComponentProps> = (props) => {
     </Box>
   )
 }
-export default CardComponent
+export default CardPanel

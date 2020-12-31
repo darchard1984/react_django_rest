@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { CloseIcon } from '@chakra-ui/icons'
 import EditBoardFormPanelSchema from './schema'
@@ -23,7 +23,7 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     props.setShowEditFormState(false)
   }
 
-  const _handleSumbit = async (
+  const _updateBoard = async (
     values: { boardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -31,12 +31,13 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     const { boardTitle } = EditBoardFormPanelSchema.cast({ ...values })
     setSubmitting(true)
 
-    const resp: AxiosResponse = await client.put(
+    const resp: AxiosResponse = await client.request(
+      'PUT',
       `/board/${props.board.pk}/`,
       {
         data: { title: boardTitle, user: props.user.pk },
+        headers: client.setAuthHeader(props.user.idToken),
       },
-      { headers: client.setAuthHeader(props.user.idToken) },
       () =>
         setErrors({
           boardTitle: 'Something went wrong, could not update your board.',
@@ -55,7 +56,7 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     <EditPanel display={props.display}>
       <Formik
         initialValues={{ boardTitle: props.board.title }}
-        onSubmit={_handleSumbit}
+        onSubmit={_updateBoard}
         validationSchema={EditBoardFormPanelSchema}
         enableReinitialize={true}
       >

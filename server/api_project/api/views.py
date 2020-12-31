@@ -25,7 +25,7 @@ def _handle_get_delete_update(request, pk, serializer, model):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     elif request.method == 'PUT':
-        serialized = serializer(entity, data=request.data.get('data'))
+        serialized = serializer(entity, data=request.data)
 
         if serialized.is_valid():
             serialized.save()
@@ -34,7 +34,7 @@ def _handle_get_delete_update(request, pk, serializer, model):
 
 
 def _handle_post(request, serializer, resource):
-    serialized = serializer(data=request.data.get('data'))
+    serialized = serializer(data=request.data)
 
     if serialized.is_valid():
         serialized.save()
@@ -109,7 +109,7 @@ def create_card(request):
 
 @api_view(['PUT'])
 def update_cards(request):
-    cards_to_update = request.data.get('data')
+    cards_to_update = request.data.get('cards')
     serialized_cards = []
     did_fail = False
 

@@ -8,27 +8,28 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import ApiClient from '../../services/api'
-import { BoardTitleFormProps } from './types'
-import BoardTitleFormSchema from './schema'
+import ApiClient from '../../services/ApiClient'
+import { FirstBoardFormProps } from './types'
+import FirstBoardFormSchema from './schema'
 import React from 'react'
 
-const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
+const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
   const client = new ApiClient()
 
-  const _handleSumbit = async (
+  const _createBoard = async (
     values: { boardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
     setSubmitting(true)
-    const { boardTitle } = BoardTitleFormSchema.cast({ ...values })
+    const { boardTitle } = FirstBoardFormSchema.cast({ ...values })
 
-    const resp = await client.post(
+    const resp = await client.request(
+      'POST',
       '/board/',
       {
         data: { title: boardTitle, user: props.user.pk },
+        headers: client.setAuthHeader(props.user.idToken),
       },
-      { headers: client.setAuthHeader(props.user.idToken) },
       () =>
         setErrors({
           boardTitle:
@@ -46,8 +47,8 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
   return (
     <Formik
       initialValues={{ boardTitle: '' }}
-      onSubmit={_handleSumbit}
-      validationSchema={BoardTitleFormSchema}
+      onSubmit={_createBoard}
+      validationSchema={FirstBoardFormSchema}
     >
       {(props) => (
         <Flex width={['80%', '500px']}>
@@ -94,4 +95,4 @@ const BoardTitleForm: React.FC<BoardTitleFormProps> = (props) => {
   )
 }
 
-export default BoardTitleForm
+export default FirstBoardForm

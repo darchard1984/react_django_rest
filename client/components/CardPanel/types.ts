@@ -1,6 +1,6 @@
 import { Card } from '../AddCard/types'
 
-export type CardComponentProps = {
+export type CardPanelProps = {
   card: Card
   index: number
   idToken: string

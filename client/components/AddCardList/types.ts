@@ -1,10 +1,10 @@
-export type AddListProps = {
+export type AddCardListProps = {
   boardId: number
   idToken: string
   setBoardState: (idToken: string) => Promise<void>
 }
 
-export type AddListState = {
+export type AddCardListState = {
   showForm: boolean
 }
 

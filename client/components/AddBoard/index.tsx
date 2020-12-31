@@ -11,7 +11,7 @@ import {
 import { Field, Form, Formik } from 'formik'
 
 import AddBoardPanelSchema from './schema'
-import ApiClient from '../../services/api'
+import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import React from 'react'
 
@@ -19,12 +19,13 @@ export class AddBoard extends React.Component<
   AddBoardPanelProps,
   AddBoardState
 > {
-  client = new ApiClient()
+  client: ApiClient
   constructor(props) {
     super(props)
     this.state = {
       showForm: false,
     }
+    this.client = new ApiClient()
   }
 
   toggleForm = () => {
@@ -37,19 +38,20 @@ export class AddBoard extends React.Component<
     })
   }
 
-  handleSumbit = async (
+  createBoard = async (
     values: { boardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
     setSubmitting(true)
     const { boardTitle } = AddBoardPanelSchema.cast({ ...values })
 
-    const resp: AxiosResponse<Board> = await this.client.post(
+    const resp: AxiosResponse<Board> = await this.client.request(
+      'POST',
       '/board/',
       {
         data: { title: boardTitle, user: this.props.user.pk },
+        headers: this.client.setAuthHeader(this.props.user.idToken),
       },
-      { headers: this.client.setAuthHeader(this.props.user.idToken) },
       () =>
         setErrors({
           boardTitle: 'Something went wrong, could not save your board.',
@@ -72,9 +74,8 @@ export class AddBoard extends React.Component<
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        mt="8"
-        ml="4"
-        mr="4"
+        mt="2"
+        mx="4"
         mb="4"
         width="200px"
         minHeight={this.state.showForm ? '0px' : '100px'}
@@ -90,7 +91,7 @@ export class AddBoard extends React.Component<
         <Flex display={this.state.showForm ? 'block' : 'none'}>
           <Formik
             initialValues={{ boardTitle: '' }}
-            onSubmit={this.handleSumbit}
+            onSubmit={this.createBoard}
             validationSchema={AddBoardPanelSchema}
           >
             {(props) => (

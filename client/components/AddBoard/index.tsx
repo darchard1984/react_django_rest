@@ -73,9 +73,8 @@ export class AddBoard extends React.Component<
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        mt="8"
-        ml="4"
-        mr="4"
+        mt="2"
+        mx="4"
         mb="4"
         width="200px"
         minHeight={this.state.showForm ? '0px' : '100px'}

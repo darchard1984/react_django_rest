@@ -23,7 +23,7 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     props.setShowEditFormState(false)
   }
 
-  const _handleSumbit = async (
+  const _updateBoard = async (
     values: { boardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -56,7 +56,7 @@ const EditBoardForm: React.FC<EditBoardFormProps> = (props) => {
     <EditPanel display={props.display}>
       <Formik
         initialValues={{ boardTitle: props.board.title }}
-        onSubmit={_handleSumbit}
+        onSubmit={_updateBoard}
         validationSchema={EditBoardFormPanelSchema}
         enableReinitialize={true}
       >

@@ -13,7 +13,7 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
   const router = useRouter()
   const [showEditForm, _setShowEditForm] = useState(false)
 
-  const _handleBoardDelete = async (boardId: number) => {
+  const _deleteBoard = async (boardId: number) => {
     const client = new ApiClient()
 
     const resp = await client.request(
@@ -30,11 +30,11 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
     }
   }
 
-  const _handleBoardLink = (boardId: number) => {
+  const _goToBoard = (boardId: number) => {
     router.push(`/board/${boardId}/`)
   }
 
-  const _handleBoardEdit = (boardId: number) => {
+  const _editBoard = (boardId: number) => {
     _setShowEditForm(true)
   }
 
@@ -56,19 +56,19 @@ const BoardPanel: React.FC<BoardPanelProps> = (props) => {
         <PanelIcon
           icon={<ExternalLinkIcon />}
           ariaLabel="go to board"
-          onIconClick={_handleBoardLink}
+          onIconClick={_goToBoard}
           pk={props.board.pk}
         />
         <PanelIcon
           icon={<FaEdit />}
           ariaLabel="edit board"
-          onIconClick={_handleBoardEdit}
+          onIconClick={_editBoard}
           pk={props.board.pk}
         />
         <PanelIcon
           icon={<CloseIcon />}
           ariaLabel="close board"
-          onIconClick={_handleBoardDelete}
+          onIconClick={_deleteBoard}
           pk={props.board.pk}
         />
       </Flex>

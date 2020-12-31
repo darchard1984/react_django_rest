@@ -23,7 +23,7 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     props.setShowEditFormState(false)
   }
 
-  const _handleSumbit = async (
+  const _updateCardList = async (
     values: { listTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -59,7 +59,7 @@ const EditCardListForm: React.FC<EditCardListFormProps> = (props) => {
     <EditPanel display={props.display}>
       <Formik
         initialValues={{ listTitle: props.cardList.title }}
-        onSubmit={_handleSumbit}
+        onSubmit={_updateCardList}
         validationSchema={EditCardListFormPanelSchema}
         enableReinitialize={true}
       >

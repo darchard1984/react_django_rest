@@ -1,5 +1,5 @@
+import { AddCardListProps, AddCardListState, CardList } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
-import { AddListProps, AddListState, CardList } from './types'
 import {
   Button,
   Flex,
@@ -11,18 +11,22 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
-import AddListSchema from './schema'
+import AddCardListSchema from './schema'
 import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import React from 'react'
 
-export class AddList extends React.Component<AddListProps, AddListState> {
-  client = new ApiClient()
+export class AddCardList extends React.Component<
+  AddCardListProps,
+  AddCardListState
+> {
+  client: ApiClient
   constructor(props) {
     super(props)
     this.state = {
       showForm: false,
     }
+    this.client = new ApiClient()
   }
 
   toggleForm = () => {
@@ -37,12 +41,12 @@ export class AddList extends React.Component<AddListProps, AddListState> {
     })
   }
 
-  handleSumbit = async (
+  createCardList = async (
     values: { listTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
     setSubmitting(true)
-    const { listTitle } = AddListSchema.cast({ ...values })
+    const { listTitle } = AddCardListSchema.cast({ ...values })
 
     const resp: AxiosResponse<CardList> = await this.client.request(
       'POST',
@@ -105,8 +109,8 @@ export class AddList extends React.Component<AddListProps, AddListState> {
         <Flex display={this.state.showForm ? 'block' : 'none'}>
           <Formik
             initialValues={{ listTitle: '' }}
-            onSubmit={this.handleSumbit}
-            validationSchema={AddListSchema}
+            onSubmit={this.createCardList}
+            validationSchema={AddCardListSchema}
           >
             {(props) => (
               <Form>
@@ -175,4 +179,4 @@ export class AddList extends React.Component<AddListProps, AddListState> {
   }
 }
 
-export default AddList
+export default AddCardList

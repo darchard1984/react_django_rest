@@ -14,13 +14,13 @@ import ApiClient from '../../services/ApiClient'
 import { AxiosResponse } from 'axios'
 import { Board } from '../AddBoard/types'
 import BoardPanel from '../BoardPanel'
-import BoardTitleForm from '../BoardTitleForm'
+import FirstBoardForm from '../FirstBoardForm'
 import { HomeState } from './types'
 import React from 'react'
 import getUser from '../../services/User'
 
 class Home extends React.Component<any, HomeState> {
-  client = new ApiClient()
+  client: ApiClient
   constructor(props) {
     super(props)
     this.state = {
@@ -38,6 +38,7 @@ class Home extends React.Component<any, HomeState> {
         },
       },
     }
+    this.client = new ApiClient()
   }
 
   async componentDidMount() {
@@ -195,7 +196,7 @@ class Home extends React.Component<any, HomeState> {
           display={!this.state.user.boards.length ? 'flex' : 'none'}
         >
           <Box display={this.state.user.pk ? 'block' : 'none'}>
-            <BoardTitleForm
+            <FirstBoardForm
               setBoardsState={this.setBoardsState.bind(this)}
               user={this.state.user}
             />

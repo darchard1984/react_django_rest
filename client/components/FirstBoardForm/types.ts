@@ -1,10 +1,10 @@
 import { User } from '../Home/types'
 
-export type BoardTitleFormState = {
+export type FirstBoardFormState = {
   boardTitle: string
 }
 
-export type BoardTitleFormProps = {
+export type FirstBoardFormProps = {
   user: User
   setBoardsState: () => Promise<void>
   title?: string

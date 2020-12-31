@@ -24,7 +24,7 @@ const EditCardForm: React.FC<EditCardFormProps> = (props) => {
     props.setShowEditFormState(false)
   }
 
-  const _handleSumbit = async (
+  const _updateCard = async (
     values: { cardTitle: string; cardDescription: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -67,7 +67,7 @@ const EditCardForm: React.FC<EditCardFormProps> = (props) => {
           cardTitle: props.card.title,
           cardDescription: props.card.description,
         }}
-        onSubmit={_handleSumbit}
+        onSubmit={_updateCard}
         validationSchema={EditCardFormSchema}
         enableReinitialize={true}
       >

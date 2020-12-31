@@ -19,12 +19,13 @@ import { AxiosResponse } from 'axios'
 import React from 'react'
 
 export class AddCard extends React.Component<AddCardProps, AddCardState> {
-  client = new ApiClient()
+  client: ApiClient
   constructor(props) {
     super(props)
     this.state = {
       showForm: false,
     }
+    this.client = new ApiClient()
   }
 
   toggleForm = () => {
@@ -39,7 +40,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
     })
   }
 
-  handleSumbit = async (
+  createCard = async (
     values: { cardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -119,7 +120,7 @@ export class AddCard extends React.Component<AddCardProps, AddCardState> {
         >
           <Formik
             initialValues={{ cardTitle: '', cardDescription: '' }}
-            onSubmit={this.handleSumbit}
+            onSubmit={this.createCard}
             validationSchema={AddCardSchema}
           >
             {(props) => (

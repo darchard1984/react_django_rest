@@ -19,12 +19,13 @@ export class AddBoard extends React.Component<
   AddBoardPanelProps,
   AddBoardState
 > {
-  client = new ApiClient()
+  client: ApiClient
   constructor(props) {
     super(props)
     this.state = {
       showForm: false,
     }
+    this.client = new ApiClient()
   }
 
   toggleForm = () => {
@@ -37,7 +38,7 @@ export class AddBoard extends React.Component<
     })
   }
 
-  handleSumbit = async (
+  createBoard = async (
     values: { boardTitle: string },
     { setErrors, resetForm, setSubmitting }
   ) => {
@@ -90,7 +91,7 @@ export class AddBoard extends React.Component<
         <Flex display={this.state.showForm ? 'block' : 'none'}>
           <Formik
             initialValues={{ boardTitle: '' }}
-            onSubmit={this.handleSumbit}
+            onSubmit={this.createBoard}
             validationSchema={AddBoardPanelSchema}
           >
             {(props) => (

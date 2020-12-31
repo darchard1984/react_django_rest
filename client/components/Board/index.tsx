@@ -9,7 +9,6 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { BoardProps, BoardState } from './types'
-import { DragDropContext, DraggableLocation } from 'react-beautiful-dnd'
 import authenticate, { signIn } from '../../services/Authenticate'
 
 import AddCardList from '../AddCardList'
@@ -19,13 +18,16 @@ import { Board } from '../AddBoard/types'
 import { Card } from '../AddCard/types'
 import { CardList } from '../AddCardList/types'
 import CardListPanel from '../CardListPanel'
+import CardService from '../../services/CardService'
 import { ChevronLeftIcon } from '@chakra-ui/icons'
+import { DragDropContext } from 'react-beautiful-dnd'
 import { DropResult } from 'react-beautiful-dnd'
 import React from 'react'
 import { withRouter } from 'next/router'
 
 class BoardComponent extends React.Component<BoardProps, BoardState> {
-  client = new ApiClient()
+  client: ApiClient
+  cardService: CardService
   constructor(props: BoardProps) {
     super(props)
     this.state = {
@@ -53,6 +55,8 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         },
       },
     }
+    this.client = new ApiClient()
+    this.cardService = new CardService()
   }
 
   async componentDidMount() {
@@ -153,17 +157,6 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     return resp
   }
 
-  async getCardList(cardListId: number): Promise<AxiosResponse<CardList>> {
-    const resp: AxiosResponse<CardList> = await this.client.request(
-      'GET',
-      `/card-list/${cardListId}/`,
-      { headers: this.client.setAuthHeader(this.state.user.idToken) },
-      this.setRequestErrorState.bind(this)
-    )
-
-    return resp
-  }
-
   async getCards(
     cardIds: number[],
     idToken: string
@@ -181,22 +174,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
     return resp
   }
 
-  onDragEnd = async (result: DropResult) => {
-    const _getCardsForList = (
-      allCards: Card[][],
-      location: DraggableLocation
-    ) => {
-      return (
-        allCards.filter((cards) => {
-          if (cards.length) {
-            const cardListId = location.droppableId
-
-            return cards[0].card_list.toString() === cardListId
-          }
-        })[0] || []
-      )
-    }
-
+  updateCardPosition = async (result: DropResult) => {
     const { destination, source } = result
     if (!destination) return
 
@@ -207,48 +185,24 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
       return
     }
 
-    const allCardsCopy = JSON.parse(JSON.stringify(this.state.cards))
-    const allCardListsCopy = JSON.parse(JSON.stringify(this.state.cardLists))
-    const sourceCards = _getCardsForList(allCardsCopy, source)
-    const sourceCard = sourceCards.splice(source.index, 1)
-    let destCards = []
-
-    if (destination.droppableId !== source.droppableId) {
-      const sourceCardList = allCardListsCopy.filter(
-        (cardList) => cardList.pk.toString() === source.droppableId
-      )[0]
-      const destCardList = allCardListsCopy.filter(
-        (cardList) => cardList.pk.toString() === destination.droppableId
-      )[0]
-      const sourceCardListCardIdIndex = sourceCardList.cards.findIndex(
-        (cardId) => cardId === sourceCard[0].pk
-      )
-
-      // Update cardList.cards relationships
-      sourceCardList.cards.splice(sourceCardListCardIdIndex, 1)
-      destCardList.cards.push(sourceCard[0].pk)
-      sourceCard[0].card_list = parseInt(destination.droppableId)
-
-      // Update cards
-      destCards = _getCardsForList(allCardsCopy, destination)
-      const destCardsWasEmpty = destCards.length ? false : true
-
-      destCards.splice(destination.index, 0, sourceCard[0])
-      sourceCards.forEach((card, index) => (card.position = index))
-      destCards.forEach((card, index) => (card.position = index))
-
-      if (destCardsWasEmpty) allCardsCopy.push(destCards)
-    } else {
-      sourceCards.splice(destination.index, 0, sourceCard[0])
-      sourceCards.forEach((card, index) => (card.position = index))
-    }
+    const [
+      allUpdatedCards,
+      allUpdatedCardLists,
+      updatedSourceCards,
+      updatedDestCards,
+    ] = this.cardService.updateCardAndListPositions(
+      this.state.cards,
+      this.state.cardLists,
+      source,
+      destination
+    )
 
     this.setState({
-      cardLists: allCardListsCopy,
-      cards: allCardsCopy,
+      cardLists: allUpdatedCardLists,
+      cards: allUpdatedCards,
     })
-    await this.updateCards(sourceCards)
-    if (destCards.length) await this.updateCards(destCards)
+    await this.updateCards(updatedSourceCards)
+    if (updatedDestCards.length) await this.updateCards(updatedDestCards)
   }
 
   async updateCards(cards: Card[]) {
@@ -273,17 +227,6 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
         },
       },
     })
-  }
-
-  private filterCards(cardListId: number): Card[] {
-    const allCards = (this.state.cards.filter((cards: Card[]) => {
-      if (cards.length) return cards[0].card_list === cardListId
-    }) as unknown) as Card[][]
-    if (!allCards.length) {
-      return []
-    }
-
-    return allCards[0].sort((a, b) => a.position - b.position)
   }
 
   render() {
@@ -336,7 +279,7 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
           </Heading>
 
           <Box overflowX="auto">
-            <DragDropContext onDragEnd={this.onDragEnd}>
+            <DragDropContext onDragEnd={this.updateCardPosition}>
               <Flex
                 justifyContent="flex-start"
                 alignItems="flex-start"
@@ -348,7 +291,10 @@ class BoardComponent extends React.Component<BoardProps, BoardState> {
                 {this.state.cardLists.map((cardList) => (
                   <CardListPanel
                     cardList={cardList}
-                    cards={this.filterCards(cardList.pk)}
+                    cards={this.cardService.filterCardsByCardListId(
+                      cardList.pk,
+                      this.state.cards
+                    )}
                     user={this.state.user}
                     setBoardState={this.setBoardState.bind(this)}
                     setErrorState={this.setRequestErrorState.bind(this)}

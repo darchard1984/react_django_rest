@@ -24,6 +24,5 @@ export const getAuth = () => {
 }
 
 configureApp()
-const auth = getAuth()
 
-export default auth
+export default getAuth()

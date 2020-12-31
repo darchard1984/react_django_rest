@@ -138,7 +138,7 @@ describe('CardService', () => {
       index: 0,
     }
 
-    // Move to card list 1, at position 1
+    // Move to card list 2, at position 1
     const destination = {
       droppableId: '2',
       index: 1,

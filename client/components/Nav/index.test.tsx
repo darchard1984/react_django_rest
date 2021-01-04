@@ -1,11 +1,11 @@
-import { mount, shallow } from 'enzyme'
-
 import Nav from '.'
+import React from 'react'
+import { mount } from 'enzyme'
 
 describe('Nav', () => {
   it('Should contain div ', () => {
-    const result = shallow(<Nav />).contains(<div>Lystly</div>)
+    const wrapper = mount(<Nav />)
 
-    expect(result).toBeTruthy()
+    expect(wrapper.find('div').text()).toEqual('Lystly')
   })
 })

@@ -1,5 +1,7 @@
 import { Box, Flex, Link } from '@chakra-ui/react'
 
+import React from 'react'
+
 const Nav: React.FC = () => {
   return (
     <Flex

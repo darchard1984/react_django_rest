@@ -48,6 +48,7 @@ class ApiClient implements IApiClient {
     } catch (error) {
       const e = new ApiClientError(`${error.message}`)
       this.handleError(e)
+
       if (onError) onError()
     }
   }

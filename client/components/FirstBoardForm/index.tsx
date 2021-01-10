@@ -6,10 +6,10 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, FormikHelpers } from 'formik'
+import { FirstBoardFormProps, FirstBoardFormState } from './types'
 
 import ApiClient from '../../services/ApiClient'
-import { FirstBoardFormProps } from './types'
 import FirstBoardFormSchema from './schema'
 import React from 'react'
 
@@ -18,7 +18,7 @@ const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
     <Formik
       initialValues={{ boardTitle: '' }}
       onSubmit={(values, formikHelpers) =>
-        _createBoard(props, values, formikHelpers)
+        createBoard(props, values, formikHelpers)
       }
       validationSchema={FirstBoardFormSchema}
     >
@@ -66,11 +66,12 @@ const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
   )
 }
 
-export const _createBoard = async (
+export const createBoard = async (
   props: FirstBoardFormProps,
-  values: { boardTitle: string },
-  { setErrors, resetForm, setSubmitting }
+  values: FirstBoardFormState,
+  formikHelpers: FormikHelpers<FirstBoardFormState>
 ) => {
+  const { setSubmitting, setErrors, resetForm } = formikHelpers
   const client = new ApiClient()
   setSubmitting(true)
   const { boardTitle } = FirstBoardFormSchema.cast({ ...values })
@@ -82,14 +83,15 @@ export const _createBoard = async (
       data: { title: boardTitle, user: props.user.pk },
       headers: client.setAuthHeader(props.user.idToken),
     },
-    () =>
+    () => {
       setErrors({
         boardTitle:
           'Something went wrong, we could not save your board at this time.',
       })
+    }
   )
 
-  if (resp.status == 201) {
+  if (resp?.status === 201) {
     await props.setBoardsState()
     resetForm()
     setSubmitting(false)

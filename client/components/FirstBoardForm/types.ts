@@ -7,5 +7,4 @@ export type FirstBoardFormState = {
 export type FirstBoardFormProps = {
   user: User
   setBoardsState: () => Promise<void>
-  title?: string
 }

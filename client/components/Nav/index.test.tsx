@@ -1,11 +1,14 @@
+import '@testing-library/jest-dom/extend-expect'
+
 import Nav from '.'
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 
 describe('Nav', () => {
   it('Should contain div ', () => {
-    const wrapper = mount(<Nav />)
+    const { getByText } = render(<Nav />)
 
-    expect(wrapper.find('div').text()).toEqual('Lystly')
+    const el = getByText('Lystly')
+    expect(el.innerHTML).toEqual('Lystly')
   })
 })

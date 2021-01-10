@@ -14,40 +14,12 @@ import FirstBoardFormSchema from './schema'
 import React from 'react'
 
 const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
-  const client = new ApiClient()
-
-  const _createBoard = async (
-    values: { boardTitle: string },
-    { setErrors, resetForm, setSubmitting }
-  ) => {
-    setSubmitting(true)
-    const { boardTitle } = FirstBoardFormSchema.cast({ ...values })
-
-    const resp = await client.request(
-      'POST',
-      '/board/',
-      {
-        data: { title: boardTitle, user: props.user.pk },
-        headers: client.setAuthHeader(props.user.idToken),
-      },
-      () =>
-        setErrors({
-          boardTitle:
-            'Something went wrong, we could not save your board at this time.',
-        })
-    )
-
-    if (resp.status == 201) {
-      await props.setBoardsState()
-      resetForm()
-      setSubmitting(false)
-    }
-  }
-
   return (
     <Formik
       initialValues={{ boardTitle: '' }}
-      onSubmit={_createBoard}
+      onSubmit={(values, formikHelpers) =>
+        _createBoard(props, values, formikHelpers)
+      }
       validationSchema={FirstBoardFormSchema}
     >
       {(props) => (
@@ -69,8 +41,7 @@ const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
                       fontSize="md"
                       type="text"
                       variant="flushed"
-                    ></Input>
-
+                    />
                     <Button
                       type="submit"
                       variant="outline"
@@ -93,6 +64,36 @@ const FirstBoardForm: React.FC<FirstBoardFormProps> = (props) => {
       )}
     </Formik>
   )
+}
+
+export const _createBoard = async (
+  props: FirstBoardFormProps,
+  values: { boardTitle: string },
+  { setErrors, resetForm, setSubmitting }
+) => {
+  const client = new ApiClient()
+  setSubmitting(true)
+  const { boardTitle } = FirstBoardFormSchema.cast({ ...values })
+
+  const resp = await client.request(
+    'POST',
+    '/board/',
+    {
+      data: { title: boardTitle, user: props.user.pk },
+      headers: client.setAuthHeader(props.user.idToken),
+    },
+    () =>
+      setErrors({
+        boardTitle:
+          'Something went wrong, we could not save your board at this time.',
+      })
+  )
+
+  if (resp.status == 201) {
+    await props.setBoardsState()
+    resetForm()
+    setSubmitting(false)
+  }
 }
 
 export default FirstBoardForm

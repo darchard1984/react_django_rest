@@ -87,8 +87,12 @@ export class AddBoard extends React.Component<
           aria-label="add a new board"
           icon={<AddIcon />}
           onClick={this.toggleForm}
+          data-testid="show-add-board-form"
         />
-        <Flex display={this.state.showForm ? 'block' : 'none'}>
+        <Flex
+          display={this.state.showForm ? 'block' : 'none'}
+          data-testid="add-board-form"
+        >
           <Formik
             initialValues={{ boardTitle: '' }}
             onSubmit={this.createBoard}
@@ -123,6 +127,7 @@ export class AddBoard extends React.Component<
                           padding="0"
                           maxLength="50"
                           mb="4"
+                          data-testid="add-board-form-input"
                         />
                         <FormErrorMessage fontSize="xs" mb="4">
                           {form.errors.boardTitle}
@@ -133,6 +138,7 @@ export class AddBoard extends React.Component<
                             aria-label="Close add board input"
                             size="xs"
                             onClick={this.handlePanelInputClose}
+                            data-testid="close-form"
                           />
                           <Button
                             type="submit"
@@ -143,6 +149,7 @@ export class AddBoard extends React.Component<
                             colorScheme="blue"
                             isLoading={form.isSubmitting}
                             isDisabled={!form.values.boardTitle}
+                            data-testid="add-board-form-submit"
                           >
                             Add
                           </Button>

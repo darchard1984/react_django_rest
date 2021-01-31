@@ -1,4 +1,4 @@
-import { AddBoardPanelProps, AddBoardState, Board } from './types'
+import { AddBoardPanelProps, AddBoardState } from './types'
 import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -12,8 +12,9 @@ import { Field, Form, Formik } from 'formik'
 
 import AddBoardPanelSchema from './schema'
 import ApiClient from '../../services/ApiClient'
-import { AxiosResponse } from 'axios'
+import { BoardFormState } from '../../components/FirstBoardForm/types'
 import React from 'react'
+import createBoard from '../../services/Board'
 
 export class AddBoard extends React.Component<
   AddBoardPanelProps,
@@ -38,27 +39,21 @@ export class AddBoard extends React.Component<
     })
   }
 
-  createBoard = async (
-    values: { boardTitle: string },
+  _createBoard = async (
+    values: BoardFormState,
     { setErrors, resetForm, setSubmitting }
   ) => {
     setSubmitting(true)
     const { boardTitle } = AddBoardPanelSchema.cast({ ...values })
 
-    const resp: AxiosResponse<Board> = await this.client.request(
-      'POST',
-      '/board/',
-      {
-        data: { title: boardTitle, user: this.props.user.pk },
-        headers: this.client.setAuthHeader(this.props.user.idToken),
-      },
-      () =>
-        setErrors({
-          boardTitle: 'Something went wrong, could not save your board.',
-        })
-    )
+    const resp = await createBoard(boardTitle, this.props.user, () => {
+      setErrors({
+        boardTitle:
+          'Something went wrong, we could not save your board at this time.',
+      })
+    })
 
-    if (resp.status == 201) {
+    if (resp?.status == 201) {
       await this.props.setBoardsState()
       resetForm()
       setSubmitting(false)
@@ -95,7 +90,7 @@ export class AddBoard extends React.Component<
         >
           <Formik
             initialValues={{ boardTitle: '' }}
-            onSubmit={this.createBoard}
+            onSubmit={this._createBoard}
             validationSchema={AddBoardPanelSchema}
           >
             {(props) => (

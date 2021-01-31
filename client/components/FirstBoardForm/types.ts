@@ -1,6 +1,6 @@
 import { User } from '../Home/types'
 
-export type FirstBoardFormState = {
+export type BoardFormState = {
   boardTitle: string
 }
 

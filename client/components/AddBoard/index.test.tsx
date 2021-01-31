@@ -3,8 +3,7 @@ import { act, fireEvent, render } from '@testing-library/react'
 import AddBoard from '../../components/AddBoard'
 import React from 'react'
 import { User } from '../Home/types'
-
-jest.mock('axios')
+import axios from 'axios'
 
 describe('AddBoard', () => {
   const setBoardState = jest.fn()
@@ -83,7 +82,7 @@ describe('AddBoard', () => {
   })
 
   it('Submit button should be disabled when no input entered', () => {
-    const { getByTestId, debug } = render(
+    const { getByTestId } = render(
       <AddBoard user={user} setBoardsState={setBoardState} />
     )
 
@@ -96,7 +95,7 @@ describe('AddBoard', () => {
   })
 
   it('Submit button should be enabled when it has an input value', async () => {
-    const { getByTestId, debug } = render(
+    const { getByTestId } = render(
       <AddBoard user={user} setBoardsState={setBoardState} />
     )
 
@@ -112,5 +111,71 @@ describe('AddBoard', () => {
 
     expect(input.value).toEqual('Foo')
     expect(submit.hasAttribute('disabled')).toEqual(false)
+  })
+
+  it('On successful submission, board form should not be visible', async () => {
+    axios.create = jest.fn().mockImplementation(() => {
+      return {
+        request: async () => ({ status: 201 }),
+      }
+    })
+    const { getByTestId } = render(
+      <AddBoard user={user} setBoardsState={setBoardState} />
+    )
+
+    const showAddBoardFormButton = getByTestId('show-add-board-form')
+    const submit = getByTestId('add-board-form-submit')
+    const input = getByTestId('add-board-form-input') as HTMLInputElement
+
+    showAddBoardFormButton.click()
+
+    expect(submit.hasAttribute('disabled'))
+
+    await act(async () => fireEvent.change(input, { target: { value: 'Foo' } }))
+
+    expect(input.value).toEqual('Foo')
+    expect(submit.hasAttribute('disabled')).toEqual(false)
+
+    await act(async () => submit.click())
+
+    const addBoardForm = getByTestId('add-board-form')
+    const style = window.getComputedStyle(addBoardForm)
+
+    expect(style.display).toBe('none')
+  })
+
+  it('On unsuccessful submission, error message should be displayed', async () => {
+    axios.create = jest.fn().mockImplementation(() => {
+      return {
+        request: async () => {
+          throw Error()
+        },
+      }
+    })
+
+    const { getByTestId, getByText, debug } = render(
+      <AddBoard user={user} setBoardsState={setBoardState} />
+    )
+
+    const showAddBoardFormButton = getByTestId('show-add-board-form')
+    const submit = getByTestId('add-board-form-submit')
+    const input = getByTestId('add-board-form-input') as HTMLInputElement
+
+    showAddBoardFormButton.click()
+
+    expect(submit.hasAttribute('disabled'))
+
+    await act(async () => fireEvent.change(input, { target: { value: 'Foo' } }))
+
+    expect(input.value).toEqual('Foo')
+    expect(submit.hasAttribute('disabled')).toEqual(false)
+
+    await act(async () => submit.click())
+
+    const errorMessage = getByText(
+      'Something went wrong, we could not save your board at this time.'
+    )
+
+    expect(errorMessage).toBeInTheDocument
   })
 })
